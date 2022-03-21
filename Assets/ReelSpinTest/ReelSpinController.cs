@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework;    
 
 public class ReelSpinController : MonoBehaviour
 {
@@ -67,6 +68,7 @@ public class ReelSpinController : MonoBehaviour
             Reels[r] = reelPrefab.GetComponent<Reel>();
             Reels[r].SpinTimer = 0f;
             Reels[r].StopTime = _SpinStopTimes[r];
+            Reels[r].BounceAmount = 2f;
 
             reelPrefab.transform.position = new Vector3(-ReelWidth + (ReelWidth * r), 0f, 0f);
 
@@ -98,8 +100,7 @@ public class ReelSpinController : MonoBehaviour
         {
             _PaylineSymbols[r] = null;
             _NumFinalSymbolsFilled[r] = 0;
-            Reels[r].Spinning = true;
-            Reels[r].Stopping = false;
+            Reels[r].State = ReelStates.Spinning;
             Reels[r].SpinTimer = 0f;
             ReelsEndPosition[r] = Random.Range(0, ReelStrips[r].Symbols.Length);
 
@@ -112,23 +113,23 @@ public class ReelSpinController : MonoBehaviour
 
         }
 
-        //LogEndPos();
-        //LogReelsResult();
+        LogEndPos();
+        LogReelsResult();
         LogPayline();
     }
 
     public void StopAllReels()
     {
-        for (int i = 0; i < Reels.Length; i++)
+        for (int r = 0; r < Reels.Length; r++)
         {
-            Reels[i].Stopping = true;
-            _NumFinalSymbolsFilled[i] = 0;
+            Reels[r].State = ReelStates.Stopping;
+            _NumFinalSymbolsFilled[r] = 0;
         }
     }
 
     public void StopReel(int r)
     {
-        Reels[r].Stopping = true;
+        Reels[r].State = ReelStates.Stopping;
     }
 
     private void CheckSpin()
@@ -138,49 +139,72 @@ public class ReelSpinController : MonoBehaviour
             for (int r = 0; r < Reels.Length; r++)
             {
                 Reel reel = Reels[r];
-                reel.SpinTimer += Time.deltaTime;
-                if(reel.SpinTimer > reel.StopTime)
-                {
-                    reel.Stopping = true;
-                }
 
-                if (reel.Stopping)
+                if (reel.State == ReelStates.Spinning)
                 {
-                    if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y <= reel.transform.position.y))
+                    MoveReelSymbols(r, true);
+
+                    if (reel.SpinTimer > reel.StopTime)
+                    {
+                        reel.State = ReelStates.Stopping;
+                    }
+                    else
+                    {
+                        reel.SpinTimer += Time.deltaTime;
+                    }
+                }
+                if (reel.State == ReelStates.Stopping)
+                {
+                    if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y <= reel.transform.position.y - Reels[r].BounceAmount))
+                    {
+                        Reels[r].State = ReelStates.Bouncing;
+                    }
+                    else
+                    {
+                        MoveReelSymbols(r, true);
+                    }
+                }
+                if (reel.State == ReelStates.Bouncing)
+                {
+                    if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y >= reel.transform.position.y))
                     {
                         ReelStopped?.Invoke(r);
                     }
-                }
-                
-                if(reel.Spinning)
-                {
-                    for (int s = 0; s < reel.Symbols.Count; s++)
+                    else
                     {
-                        reel.Symbols[s].Position.y -= ReelSpinSpeed * Time.deltaTime;
-
-                        if (reel.Symbols[s].Position.y <= -SymbolHeight * 3f / 100f)
-                        {
-                            ResetSymbolPosition(r, s);
-                        }
-
-
-                        reel.Symbols[s].Transform.position = reel.Symbols[s].Position;
+                        MoveReelSymbols(r, false);
                     }
                 }
             }
         }
     }
 
+    private void MoveReelSymbols(int reelNumber, bool down)
+    {
+        Reel reel = Reels[reelNumber];
+
+        for (int s = 0; s < reel.Symbols.Count; s++)
+        {
+            reel.Symbols[s].Position.y += (ReelSpinSpeed * Time.deltaTime) * (down ? -1f : 1f);
+
+            if (reel.Symbols[s].Position.y <= -SymbolHeight * 3f / 100f)
+            {
+                ResetSymbolPosition(reelNumber, s);
+            }
+
+
+            reel.Symbols[s].Transform.position = reel.Symbols[s].Position;
+        }
+    }
 
     private void OnReelStopped(int r)
     {
         Reel reel = Reels[r];
-        reel.Spinning = false;
-        reel.Stopping = false;
-        
+        reel.State = ReelStates.Idle;
+
         for (int i = 0; i < Reels.Length; i++)
         {
-            if(Reels[i].Spinning)
+            if(Reels[i].State == ReelStates.Spinning)
             {
                 return; // A reel is still spinning
             }
@@ -202,7 +226,7 @@ public class ReelSpinController : MonoBehaviour
         Reels[r].LiveSymbols.AddRange(otherSymbols);
         ReelPosition[r]++;
 
-        if (Reels[r].Stopping)
+        if (Reels[r].State == ReelStates.Stopping)
         {
             int newReelPos = Modulo(-ReelsEndPosition[r] - ReelsResult[r].Length + _NumFinalSymbolsFilled[r], ReelStrips[r].Symbols.Length);
             int checkSymbolIndex = Modulo(-newReelPos - ReelPaddingAmount - DisplayOffset, ReelStrips[r].Symbols.Length);
@@ -256,7 +280,7 @@ public class ReelSpinController : MonoBehaviour
             str += "   ";
         }
 
-        Debug.LogError("Reels Result: " + str);
+        Debugger.Instance.Log("Reels Result: " + str);
     }
 
     private void LogPayline()
@@ -268,7 +292,7 @@ public class ReelSpinController : MonoBehaviour
             str += GetSymbolNameByID(ReelsResult[r][1]) + " ";
         }
 
-        Debug.LogError("Reels Result: " + str);
+        Debugger.Instance.Log("Reels Result: " + str);
     }
 
     private void LogEndPos()
@@ -280,7 +304,7 @@ public class ReelSpinController : MonoBehaviour
             str += ReelsEndPosition[r] + " ";
         }
 
-        Debug.LogError("Reels End Pos: " + str);
+        Debugger.Instance.Log("Reels End Pos: " + str);
     }
 
     private int Modulo(int x, int m)
