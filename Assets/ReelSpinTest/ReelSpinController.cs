@@ -11,7 +11,7 @@ public class ReelSpinController : MonoBehaviour
     public int ReelPaddingAmount = 1;
     public int DisplayOffset = 1;
 
-    public float ReelSpinSpeed = 10f;
+    public float DefaultSpinSpeed = 10f;
 
     public int SymbolHeight = 360;
     public float ReelWidth = 5f;
@@ -21,6 +21,8 @@ public class ReelSpinController : MonoBehaviour
 
     public ReelStrip[] ReelStrips;
     public SymbolData[] SymbolInfo;
+    
+    public System.Action<int> ReelStopped;
 
     private int[] ReelPosition = new int[3] { 0, 0, 0 };
     private int[] ReelsEndPosition = new int[3] { 0, 5, 12 };
@@ -30,7 +32,7 @@ public class ReelSpinController : MonoBehaviour
     private int[] _NumFinalSymbolsFilled = new int[3] { 0, 0, 0 };
     private ReelSymbol[] _PaylineSymbols = new ReelSymbol[3];
 
-    public System.Action<int> ReelStopped;
+    private float _CurrentSpinSpeed;
 
     private void Start()
     {
@@ -44,14 +46,7 @@ public class ReelSpinController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            if(Spinning)
-            {
-                StopAllReels();
-            }
-            else
-            {
-                Spin();
-            }
+            RequestSpin();
         }
 
         CheckSpin();
@@ -68,7 +63,7 @@ public class ReelSpinController : MonoBehaviour
             Reels[r] = reelPrefab.GetComponent<Reel>();
             Reels[r].SpinTimer = 0f;
             Reels[r].StopTime = _SpinStopTimes[r];
-            Reels[r].BounceAmount = 2f;
+            Reels[r].BounceAmount = .5f;
 
             reelPrefab.transform.position = new Vector3(-ReelWidth + (ReelWidth * r), 0f, 0f);
 
@@ -91,10 +86,22 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
+    public void RequestSpin()
+    {
+        if (!Spinning)
+        {
+            Spin();
+        }
+        else if (AllReelsSpinning())
+        {
+            StopAllReels();
+        }
+    }
 
-    public void Spin()
+    private void Spin()
     {
         Spinning = true;
+        _CurrentSpinSpeed = DefaultSpinSpeed;
 
         for (int r = 0; r < Reels.Length; r++)
         {
@@ -118,8 +125,9 @@ public class ReelSpinController : MonoBehaviour
         LogPayline();
     }
 
-    public void StopAllReels()
+    private void StopAllReels()
     {
+        //_CurrentSpinSpeed = DefaultSpinSpeed * 1.5f;
         for (int r = 0; r < Reels.Length; r++)
         {
             Reels[r].State = ReelStates.Stopping;
@@ -127,7 +135,7 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
-    public void StopReel(int r)
+    private void StopReel(int r)
     {
         Reels[r].State = ReelStates.Stopping;
     }
@@ -185,13 +193,12 @@ public class ReelSpinController : MonoBehaviour
 
         for (int s = 0; s < reel.Symbols.Count; s++)
         {
-            reel.Symbols[s].Position.y += (ReelSpinSpeed * Time.deltaTime) * (down ? -1f : 1f);
+            reel.Symbols[s].Position.y += (_CurrentSpinSpeed * Time.deltaTime) * (down ? -1f : 1f);
 
             if (reel.Symbols[s].Position.y <= -SymbolHeight * 3f / 100f)
             {
                 ResetSymbolPosition(reelNumber, s);
             }
-
 
             reel.Symbols[s].Transform.position = reel.Symbols[s].Position;
         }
@@ -249,6 +256,20 @@ public class ReelSpinController : MonoBehaviour
         int symbolID = ReelStrips[r].Symbols[newSymbolIndex];
         Reels[r].Symbols[s].SpriteRenderer.sprite = GetSpriteByIndex(r, newSymbolIndex);
         Reels[r].Symbols[s].SymbolID = symbolID;
+    }
+
+    private bool AllReelsSpinning()
+    {
+        bool rtn = true;
+        for (int i = 0; i < Reels.Length; i++)
+        {
+            if(Reels[i].State != ReelStates.Spinning)
+            {
+                rtn = false;
+            }
+        }
+
+        return rtn;
     }
 
     private Sprite GetSpriteByIndex(int reel, int index)
