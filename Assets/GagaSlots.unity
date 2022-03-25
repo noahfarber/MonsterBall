@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1617,7 +1617,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 561492828}
   m_maskType: 0
-  _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 4
 --- !u!23 &561492828
@@ -2740,7 +2739,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 867270219}
   m_maskType: 0
-  _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 4
 --- !u!23 &867270219
@@ -4858,7 +4856,7 @@ MonoBehaviour:
   VisibleSymbolsCount: 3
   ReelPaddingAmount: 1
   DisplayOffset: 1
-  DefaultSpinSpeed: 30
+  DefaultSpinSpeed: 25
   SymbolHeight: 360
   ReelWidth: 5
   ReelPrefab: {fileID: 8827588358557806606, guid: 2fad3edc1289e244b99bcacd1ad678c9, type: 3}

@@ -120,8 +120,8 @@ public class ReelSpinController : MonoBehaviour
 
         }
 
-        LogEndPos();
-        LogReelsResult();
+        //LogEndPos();
+        //LogReelsResult();
         LogPayline();
     }
 
@@ -161,7 +161,7 @@ public class ReelSpinController : MonoBehaviour
                         reel.SpinTimer += Time.deltaTime;
                     }
                 }
-                if (reel.State == ReelStates.Stopping)
+                else if (reel.State == ReelStates.Stopping)
                 {
                     if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y <= reel.transform.position.y - Reels[r].BounceAmount))
                     {
@@ -172,28 +172,31 @@ public class ReelSpinController : MonoBehaviour
                         MoveReelSymbols(r, true);
                     }
                 }
-                if (reel.State == ReelStates.Bouncing)
+                else if (reel.State == ReelStates.Bouncing)
                 {
-                    if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y >= reel.transform.position.y))
+                    float speedMult = .75f;
+                    if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y + (_CurrentSpinSpeed * Time.deltaTime * speedMult) >= reel.transform.position.y))
                     {
+                        SnapReelSymbols(r);
+                        //MoveReelSymbols(r, false, true);
                         ReelStopped?.Invoke(r);
                     }
                     else
                     {
-                        MoveReelSymbols(r, false);
+                        MoveReelSymbols(r, false, speedMult);
                     }
                 }
             }
         }
     }
 
-    private void MoveReelSymbols(int reelNumber, bool down)
+    private void MoveReelSymbols(int reelNumber, bool down, float speedMultiplier = 1f)
     {
         Reel reel = Reels[reelNumber];
 
         for (int s = 0; s < reel.Symbols.Count; s++)
         {
-            reel.Symbols[s].Position.y += (_CurrentSpinSpeed * Time.deltaTime) * (down ? -1f : 1f);
+            reel.Symbols[s].Position.y += (_CurrentSpinSpeed * Time.deltaTime * speedMultiplier) * (down ? -1f : 1f);
 
             if (reel.Symbols[s].Position.y <= -SymbolHeight * 3f / 100f)
             {
@@ -204,6 +207,19 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
+    private void SnapReelSymbols(int reelNumber)
+    {
+        Reel reel = Reels[reelNumber];
+
+        for (int i = 0; i < reel.LiveSymbols.Count; i++)
+        {
+            ReelSymbol symbol = reel.LiveSymbols[i];
+            Vector3 position = new Vector3(symbol.Position.x, ((SymbolHeight * ReelPaddingAmount * 2) - (SymbolHeight * Modulo(i, reel.Symbols.Count))) / 100f, 0f);
+            symbol.Position = position;
+            symbol.Transform.position = symbol.Position;
+        }
+    }
+
     private void OnReelStopped(int r)
     {
         Reel reel = Reels[r];
@@ -211,7 +227,7 @@ public class ReelSpinController : MonoBehaviour
 
         for (int i = 0; i < Reels.Length; i++)
         {
-            if(Reels[i].State == ReelStates.Spinning)
+            if(Reels[i].State != ReelStates.Idle)
             {
                 return; // A reel is still spinning
             }
