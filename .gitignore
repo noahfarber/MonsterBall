@@ -96,5 +96,7 @@ crashlytics-build.properties
 
 /[Aa]ssets/[Pp]lugins/[Ff]ramework/
 /[Aa]ssets/[Pp]lugins/[Ff]ramework.meta
+/[Aa]ssets/[Ff]ramework/
+/[Aa]ssets/[Ff]ramework.meta
 ProjectSettings/ProjectVersion.txt
 Assets/Framework/Examples/
