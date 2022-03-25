@@ -44,9 +44,33 @@ public class ReelSpinController : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             RequestSpin();
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            RequestSpin(new int[3] { 0, 0, 0 });
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            RequestSpin(new int[3] { 1, 1, 1 });
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            RequestSpin(new int[3] { 2, 2, 2 });
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            RequestSpin(new int[3] { 3, 3, 3 });
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            RequestSpin(new int[3] { 4, 4, 4 });
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            RequestSpin(new int[3] { 5, 5, 5 });
         }
 
         CheckSpin();
@@ -86,11 +110,11 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
-    public void RequestSpin()
+    public void RequestSpin(int[] symbolIDs = null)
     {
         if (!Spinning)
         {
-            Spin();
+            Spin(symbolIDs);
         }
         else if (AllReelsSpinning())
         {
@@ -98,7 +122,7 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
-    private void Spin()
+    private void Spin(int[] symbolIDs = null)
     {
         Spinning = true;
         _CurrentSpinSpeed = DefaultSpinSpeed;
@@ -109,7 +133,19 @@ public class ReelSpinController : MonoBehaviour
             _NumFinalSymbolsFilled[r] = 0;
             Reels[r].State = ReelStates.Spinning;
             Reels[r].SpinTimer = 0f;
-            ReelsEndPosition[r] = Random.Range(0, ReelStrips[r].Symbols.Length);
+
+            if (symbolIDs == null)
+            {
+                ReelsEndPosition[r] = Random.Range(0, ReelStrips[r].Symbols.Length);
+            }
+            else if (ReelsEndPosition.Length != symbolIDs.Length)
+            {
+                Debugger.Instance.LogError("Incorrect amount of symbols provided: " + symbolIDs.Length);
+            }
+            else
+            {
+                ReelsEndPosition[r] = GetEndPositionFromSymbol(r, symbolIDs[r]);
+            }
 
             if (ReelsResult[r] == null) { ReelsResult[r] = new int[3]; }
             
@@ -123,6 +159,48 @@ public class ReelSpinController : MonoBehaviour
         //LogEndPos();
         //LogReelsResult();
         LogPayline();
+    }
+
+    public List<WinDetail> EvaluateWin()
+    {
+        List<WinDetail> details = new List<WinDetail>();
+
+        for (int s = 0; s < SymbolInfo.Length; s++)
+        {
+            int symbolID = SymbolInfo[s].SymbolID;
+            PayEntry[] payEntry = GetSymbolPay(symbolID);
+            int count = 0;
+
+            for (int i = 0; i < ReelsEndPosition.Length; i++)
+            {
+                int symbol = GetSymbolFromEndPos(i, ReelsEndPosition[i]);
+                if(symbol == SymbolInfo[s].SymbolID)
+                {
+                    count++;
+                }
+            }
+
+            for (int e = 0; e < payEntry.Length; e++)
+            {
+                if(payEntry[e].PayMode == PayModes.Line)
+                {
+                    for (int i = 0; i < payEntry[e].PayData.Length; i++)
+                    {
+                        if (count == payEntry[e].PayData[i].NumSymbols)
+                        {
+                            WinDetail detailWon = new WinDetail();
+                            detailWon.SymbolID = symbolID;
+                            detailWon.SymbolCount = count;
+                            detailWon.Pay = payEntry[e].PayData[i].Pay;
+                            details.Add(detailWon);
+                        }
+                    }
+                }
+                //else if( )
+            }
+        }
+
+        return details;
     }
 
     private void StopAllReels()
@@ -288,9 +366,50 @@ public class ReelSpinController : MonoBehaviour
         return rtn;
     }
 
+    private int GetEndPositionFromSymbol(int r, int symbol)
+    {
+        List<int> rtn = new List<int>();
+
+        for (int s = 0; s < ReelStrips[r].Symbols.Length; s++)
+        {
+            int check = ReelStrips[r].Symbols[s];
+
+            if (check == symbol)
+            {
+                rtn.Add(s);
+            }
+        }
+
+        if (rtn.Count == 0)
+        {
+            Debugger.Instance.LogError("Couldn't find symbol: " + symbol + " on reel strip " + r);
+        }
+
+        return rtn[Random.Range(0, rtn.Count)];
+    }
+
+    private int GetSymbolFromEndPos(int r, int endPos)
+    {
+        return ReelStrips[r].Symbols[endPos];
+    }
+
     private Sprite GetSpriteByIndex(int reel, int index)
     {
         return SymbolInfo[ReelStrips[reel].Symbols[index]].Image;
+    }
+
+    private PayEntry[] GetSymbolPay(int symbol)
+    {
+        PayEntry[] rtn = new PayEntry[0];
+        for (int i = 0; i < SymbolInfo.Length; i++)
+        {
+            if (SymbolInfo[i].SymbolID == symbol)
+            {
+                rtn = SymbolInfo[i].PayInfo;
+            }
+        }
+
+        return rtn;
     }
 
     private string GetSymbolNameByID(int id)
@@ -360,6 +479,35 @@ public class ReelStrip
 public class SymbolData
 {
     public string Name;
-    public int Index;
+    public int SymbolID;
     public Sprite Image;
+    public PayEntry[] PayInfo;
+}
+
+[System.Serializable]
+public struct PayEntry
+{
+    public PayModes PayMode;
+    public PayData[] PayData;
+}
+
+[System.Serializable]
+public struct PayData
+{
+    public int NumSymbols;
+    public int Pay;
+}
+
+[System.Serializable]
+public enum PayModes
+{
+    Line,
+    Scattered
+}
+
+public class WinDetail
+{
+    public int SymbolID;
+    public int SymbolCount;
+    public int Pay;
 }
