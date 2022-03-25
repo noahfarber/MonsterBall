@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/GagaSlots.unity
+    path: Assets/MonsterBall/Scenes/GagaSlots.unity
     guid: 8f0088d8ee07812429ce336763596b9d
   m_configObjects: {}

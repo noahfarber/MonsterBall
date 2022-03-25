@@ -44,35 +44,6 @@ public class ReelSpinController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            RequestSpin();
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad1))
-        {
-            RequestSpin(new int[3] { 0, 0, 0 });
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad2))
-        {
-            RequestSpin(new int[3] { 1, 1, 1 });
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad3))
-        {
-            RequestSpin(new int[3] { 2, 2, 2 });
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad4))
-        {
-            RequestSpin(new int[3] { 3, 3, 3 });
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad5))
-        {
-            RequestSpin(new int[3] { 4, 4, 4 });
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad6))
-        {
-            RequestSpin(new int[3] { 5, 5, 5 });
-        }
-
         CheckSpin();
     }
 

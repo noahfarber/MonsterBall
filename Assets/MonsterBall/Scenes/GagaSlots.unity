@@ -385,7 +385,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1597938154}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TestPlayingState, Assembly-CSharp
         m_MethodName: PauseGame
         m_Mode: 1
@@ -1773,7 +1773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e7b2c4b9422df54ab5e702a78c2344a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultState: {fileID: 1220241781}
+  DefaultState: {fileID: 1597938154}
   CurrentState: {fileID: 0}
 --- !u!114 &562669828
 MonoBehaviour:
@@ -1829,7 +1829,7 @@ GameObject:
   - component: {fileID: 586125436}
   - component: {fileID: 586125437}
   m_Layer: 0
-  m_Name: DefaultGameState
+  m_Name: SpinState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1847,7 +1847,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1597938153}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &586125437
 MonoBehaviour:
@@ -1858,9 +1858,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 586125435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 581787d2dff5fbc4280ba1dacf6f0369, type: 3}
+  m_Script: {fileID: 11500000, guid: be40c6d72ac39764eb733da236577983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ReelsController: {fileID: 2762647448190642732}
+  WinPresentationState: {fileID: 1832331070}
 --- !u!1 &599943521
 GameObject:
   m_ObjectHideFlags: 0
@@ -3330,7 +3332,7 @@ GameObject:
   - component: {fileID: 1022029471}
   - component: {fileID: 1022029472}
   m_Layer: 0
-  m_Name: PausedState
+  m_Name: GameMenuState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3348,7 +3350,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1597938153}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1022029472
 MonoBehaviour:
@@ -3359,10 +3361,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1022029470}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46d7e8232cacc9149a2a8b8b083d07ec, type: 3}
+  m_Script: {fileID: 11500000, guid: b4c5fa783be9eba44ae7dc068ddd6f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PauseMenu: {fileID: 790579841}
 --- !u!1 &1032012415
 GameObject:
   m_ObjectHideFlags: 0
@@ -3829,7 +3830,7 @@ MonoBehaviour:
   MainMenu: {fileID: 545415931}
   PauseMenu: {fileID: 790579841}
   PlayButton: {fileID: 474398924}
-  _Playing: {fileID: 1597938154}
+  _Playing: {fileID: 0}
 --- !u!4 &1220241782
 Transform:
   m_ObjectHideFlags: 0
@@ -4070,6 +4071,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1305322339}
   m_CullTransparentMesh: 1
+--- !u!1 &1343517743
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1343517744}
+  - component: {fileID: 1343517745}
+  m_Layer: 0
+  m_Name: IdleState
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1343517744
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1343517743}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1597938153}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1343517745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1343517743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c3eee1ef57bee14da43532a2ec6fbc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpinState: {fileID: 586125437}
 --- !u!1 &1397840693
 GameObject:
   m_ObjectHideFlags: 0
@@ -4358,7 +4403,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1343517744}
   - {fileID: 586125436}
+  - {fileID: 1832331069}
+  - {fileID: 1852998579}
   - {fileID: 1022029471}
   m_Father: {fileID: 562669829}
   m_RootOrder: 1
@@ -4372,13 +4420,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1597938152}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7f33c9c6b3637341a66515fa5f1f840, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ca1d61de85fa5149a5d8ab72c9d8c2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultState: {fileID: 586125437}
+  DefaultState: {fileID: 1343517745}
   CurrentState: {fileID: 0}
-  _Game: {fileID: 825984951}
-  _Paused: {fileID: 1022029472}
+  _Game: {fileID: 2762647449634706711}
+  _GameMenu: {fileID: 1022029472}
 --- !u!1 &1623981044
 GameObject:
   m_ObjectHideFlags: 0
@@ -4543,6 +4591,94 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1693982405}
   m_CullTransparentMesh: 1
+--- !u!1 &1832331068
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1832331069}
+  - component: {fileID: 1832331070}
+  m_Layer: 0
+  m_Name: WinPresentationState
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1832331069
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832331068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1597938153}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1832331070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832331068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 976c1a5297baf0e449ba36f34565081a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EndGameState: {fileID: 1852998580}
+--- !u!1 &1852998578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1852998579}
+  - component: {fileID: 1852998580}
+  m_Layer: 0
+  m_Name: EndGameState
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1852998579
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852998578}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1597938153}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1852998580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852998578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20b7df20a415217498bd61ebea611521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IdleState: {fileID: 1343517745}
 --- !u!1 &1857222740
 GameObject:
   m_ObjectHideFlags: 0
@@ -4953,7 +5089,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1597938154}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TestPlayingState, Assembly-CSharp
         m_MethodName: PauseGame
         m_Mode: 1
@@ -5031,7 +5167,7 @@ MonoBehaviour:
   - Symbols: 05000000000000000700000000000000040000000000000003000000000000000100000000000000080000000000000006000000000000000200000000000000
   SymbolInfo:
   - Name: Blank
-    Index: 0
+    SymbolID: 0
     Image: {fileID: 0}
     PayInfo:
     - PayMode: 0
@@ -5039,7 +5175,7 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 1
   - Name: Cherry
-    Index: 1
+    SymbolID: 0
     Image: {fileID: 21300000, guid: 1cdd7c8a6ded68342bf998b11d9c0440, type: 3}
     PayInfo:
     - PayMode: 1
@@ -5053,7 +5189,7 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 15
   - Name: Bar1
-    Index: 2
+    SymbolID: 0
     Image: {fileID: 21300000, guid: a7d85bffafd7eb049b917c34485802e9, type: 3}
     PayInfo:
     - PayMode: 0
@@ -5061,7 +5197,7 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 10
   - Name: Bar2
-    Index: 3
+    SymbolID: 0
     Image: {fileID: 21300000, guid: 6305c9b2f5efb564ba2189917f28e86d, type: 3}
     PayInfo:
     - PayMode: 0
@@ -5069,7 +5205,7 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 20
   - Name: Bar3
-    Index: 4
+    SymbolID: 0
     Image: {fileID: 21300000, guid: 0e47046118e367243a7959f4638258da, type: 3}
     PayInfo:
     - PayMode: 0
@@ -5077,7 +5213,7 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 30
   - Name: Bell
-    Index: 5
+    SymbolID: 0
     Image: {fileID: 21300000, guid: c9cc6d738b0e60a45a9d2b666cbc644f, type: 3}
     PayInfo:
     - PayMode: 0
@@ -5085,7 +5221,7 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 50
   - Name: Seven
-    Index: 6
+    SymbolID: 0
     Image: {fileID: 21300000, guid: ab6afdf55a25e5946ae5e914a45f4670, type: 3}
     PayInfo:
     - PayMode: 0
@@ -5093,13 +5229,13 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 75
   - Name: Diamond
-    Index: 7
+    SymbolID: 0
     Image: {fileID: 21300000, guid: 85798d5c7cdfcde47bafff7ba2fc5649, type: 3}
     PayInfo:
     - PayMode: 0
       PayData: []
   - Name: Wild
-    Index: 8
+    SymbolID: 0
     Image: {fileID: 21300000, guid: fd68ded6936aa18428b4fc5f36a8a806, type: 3}
     PayInfo:
     - PayMode: 0
@@ -5107,7 +5243,7 @@ MonoBehaviour:
       - NumSymbols: 3
         Pay: 1000
   - Name: Multi-Bar
-    Index: 9
+    SymbolID: 0
     Image: {fileID: 21300000, guid: a7d85bffafd7eb049b917c34485802e9, type: 3}
     PayInfo:
     - PayMode: 0
