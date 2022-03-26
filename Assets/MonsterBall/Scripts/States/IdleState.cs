@@ -6,20 +6,33 @@ using Framework;
 public class IdleState : State
 {
     [SerializeField] private SpinState SpinState;
-
+    private bool _TryStartGame = false;
     public override void OnStateEnter()
     {
-
+        _TryStartGame = false;
     }
 
     public override State OnUpdate()
     {
         State rtn = null;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (_TryStartGame)
         {
-            rtn = SpinState;
+            if (Central.GlobalData.Money > Central.GlobalData.BetAmount)
+            {
+                Central.GlobalData.Money.Value -= Central.GlobalData.BetAmount;
+                IncrementerManager.Instance.WinMeter.SetValue(0);
+                rtn = SpinState;
+            }
+
+            _TryStartGame = false;
         }
+
+        if(Input.GetKeyDown(KeyCode.KeypadPeriod))
+        {
+            SpinState.SetDemoSymbols(new int[3] { 0, 0, 0 });
+        }
+
         if (Input.GetKeyDown(KeyCode.Keypad1))
         {
             SpinState.SetDemoSymbols(new int[3] { 0, 0, 0 });
@@ -58,4 +71,10 @@ public class IdleState : State
     {
 
     }
+
+    public void PlayButtonPressed()
+    {
+        _TryStartGame = true;
+    }
+
 }
