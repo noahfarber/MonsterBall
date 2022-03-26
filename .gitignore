@@ -97,9 +97,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Pp]lugins/[Ff]ramework/
 /[Aa]ssets/[Pp]lugins/[Ff]ramework.meta
 /[Aa]ssets/[Rr]esources/dh_buckets.json
-/[Aa]ssets/[Rr]esources/dh_buckets.meta
+/[Aa]ssets/[Rr]esources/dh_buckets.json.meta
 /[Aa]ssets/[Rr]esources/dh_weights.json
-/[Aa]ssets/[Rr]esources/dh_weights.meta
+/[Aa]ssets/[Rr]esources/dh_weights.json.meta
 /[Aa]ssets/[Ff]ramework/
 /[Aa]ssets/[Ff]ramework.meta
 ProjectSettings/ProjectVersion.txt
