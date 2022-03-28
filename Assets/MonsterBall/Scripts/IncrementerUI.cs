@@ -7,11 +7,9 @@ public class IncrementerUI : MonoBehaviour
 {
     public TextMeshProUGUI Text;
     public System.Action IncrementationComplete;
-    public bool Incrementing = false;
-    
-    private int _InitialValue = 0;
+
+    private bool _Incrementing = false;
     private int _Value = 0;
-    private int _DeltaValue = 0;
     private int _FinalValue = 0;
     private float _Duration = 0f;
     private float _IncrementTimer = 0f;
@@ -28,7 +26,7 @@ public class IncrementerUI : MonoBehaviour
 
     void Update()
     {
-        if (Incrementing)
+        if (_Incrementing)
         {
             if (_IncrementTimer >= _Duration)
             {
@@ -36,7 +34,7 @@ public class IncrementerUI : MonoBehaviour
             }
             else
             {
-                _Value = _InitialValue + (int)((_IncrementTimer / _Duration) * _DeltaValue);
+                _Value = (int)((_IncrementTimer / _Duration) * _FinalValue);
                 _IncrementTimer += Time.deltaTime;
             }
 
@@ -46,32 +44,17 @@ public class IncrementerUI : MonoBehaviour
 
     public void Increment(int toValue, float duration, int startValue = 0)
     {
-        _InitialValue = startValue;
+        _Value = startValue;
         _Duration = duration;
-        _DeltaValue = toValue - startValue;
         _FinalValue = toValue;
         _IncrementTimer = 0f;
-        Incrementing = true;
-    }
-
-    public void SetValue(int value)
-    {
-        _Value = value;
-        UpdateText();
-    }
-
-    public void OnPlayButtonPressed()
-    {
-        if(Incrementing)
-        {
-            _IncrementTimer = _Duration;
-        }
+        _Incrementing = true;
     }
 
     private void CompleteIncrementation()
     {
         _Value = _FinalValue;
-        Incrementing = false;
+        _Incrementing = false;
         IncrementationComplete?.Invoke();
     }
 

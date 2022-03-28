@@ -47,25 +47,6 @@ public class ReelSpinController : MonoBehaviour
         CheckSpin();
     }
 
-
-    public void GenerateReelsEndPosition(DazzleSpinData outcome)
-    {
-        List<int> stops = new List<int>();
-        stops = Central.MathGenerator.StringToIntList(outcome.stops);
-
-        if (stops.Count == ReelsEndPosition.Length)
-        {
-            for (int i = 0; i < ReelsEndPosition.Length; ++i)
-            {
-                ReelsEndPosition[i] = stops[i];
-            }
-        }
-        else
-        {
-            Debug.LogError("Bz reel stops and slots generation stops have a length mismatch.");
-        }
-    }
-
     public void GenerateReels()
     {
         Reels = new Reel[ReelCount];
@@ -100,76 +81,58 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
-    public void RequestStop()
+    public void RequestSpin(int[] symbolIDs = null)
     {
-        if (AllReelsSpinning())
+        if (!Spinning)
+        {
+            Spin(symbolIDs);
+        }
+        else if (AllReelsSpinning())
         {
             StopAllReels();
         }
     }
-    
-    public void Spin(DazzleSpinData spinData)
-    {
-        Spin(spinData, null);
 
-    }
-
-    public void Spin(int[] demoSymbols)
+    private void Spin(int[] symbolIDs = null)
     {
-        Spin(null, demoSymbols);
-    }
+        Spinning = true;
+        _CurrentSpinSpeed = DefaultSpinSpeed;
 
-    private void Spin(DazzleSpinData spinData = null, int[] demoSymbols = null)
-    {
-        if(!Spinning)
+        for (int r = 0; r < Reels.Length; r++)
         {
-            Spinning = true;
-            _CurrentSpinSpeed = DefaultSpinSpeed;
+            _PaylineSymbols[r] = null;
+            _NumFinalSymbolsFilled[r] = 0;
+            Reels[r].State = ReelStates.Spinning;
+            Reels[r].SpinTimer = 0f;
 
-            if (demoSymbols == null)
+            if (symbolIDs == null)
             {
-                GenerateReelsEndPosition(spinData);
+                ReelsEndPosition[r] = Random.Range(0, ReelStrips[r].Symbols.Length);
+            }
+            else if (ReelsEndPosition.Length != symbolIDs.Length)
+            {
+                Debugger.Instance.LogError("Incorrect amount of symbols provided: " + symbolIDs.Length);
             }
             else
             {
-                Central.MathGenerator.Outcome = null;
+                ReelsEndPosition[r] = GetEndPositionFromSymbol(r, symbolIDs[r]);
             }
 
-            for (int r = 0; r < Reels.Length; r++)
+            if (ReelsResult[r] == null) { ReelsResult[r] = new int[3]; }
+            
+            for (int s = 0; s < ReelsResult[r].Length; s++)
             {
-                _PaylineSymbols[r] = null;
-                _NumFinalSymbolsFilled[r] = 0;
-                Reels[r].State = ReelStates.Spinning;
-                Reels[r].SpinTimer = 0f;
-
-                if (demoSymbols != null)
-                {
-                    if (demoSymbols.Length != ReelsEndPosition.Length)
-                    {
-                        Debugger.Instance.LogError("Incorrect amount of symbols provided: " + demoSymbols.Length);
-                    }
-                    else
-                    {
-                        ReelsEndPosition[r] = GetEndPositionFromSymbol(r, demoSymbols[r]);
-                    }
-                }
-
-                if (ReelsResult[r] == null) { ReelsResult[r] = new int[3]; }
-
-                for (int s = 0; s < ReelsResult[r].Length; s++)
-                {
-                    ReelsResult[r][s] = ReelStrips[r].Symbols[Modulo(ReelsEndPosition[r] + s - ReelPaddingAmount, ReelStrips[r].Symbols.Length)];
-                }
-
+                ReelsResult[r][s] = ReelStrips[r].Symbols[Modulo(ReelsEndPosition[r] + s - ReelPaddingAmount, ReelStrips[r].Symbols.Length)];
             }
 
-            //LogEndPos();
-            //LogReelsResult();
-            LogPayline();
         }
+
+        //LogEndPos();
+        //LogReelsResult();
+        LogPayline();
     }
 
-    /*public List<WinDetail> EvaluateWin()
+    public List<WinDetail> EvaluateWin()
     {
         List<WinDetail> details = new List<WinDetail>();
 
@@ -209,7 +172,7 @@ public class ReelSpinController : MonoBehaviour
         }
 
         return details;
-    }*/
+    }
 
     private void StopAllReels()
     {

@@ -7,27 +7,17 @@ public class SpinState : State
 {
     public ReelSpinController ReelsController;
     [SerializeField] private State WinPresentationState;
-    private bool _PlayButtonPressed = false;
     private int[] _DemoSymbols;
 
     public override void OnStateEnter()
     {
-        _PlayButtonPressed = false;
-        if (_DemoSymbols != null)
+        if(_DemoSymbols != null)
         {
-            ReelsController.Spin(_DemoSymbols);
+            ReelsController.RequestSpin(_DemoSymbols);
         }
         else
         {
-            DazzleSpinData spinData = Central.MathGenerator.RequestOutcome().GetSpin(0);
-            Central.GlobalData.TotalWon.Value = spinData.spinAward * Central.GlobalData.BetMultiplier;
-
-            if (spinData.spinAward < spinData.totalAward)
-            {
-                Debugger.Instance.LogError("Missed a bonus");
-            }
-
-            ReelsController.Spin(spinData);
+            ReelsController.RequestSpin();
         }
     }
 
@@ -35,12 +25,6 @@ public class SpinState : State
     {
         State rtn = null;
         
-        if(_PlayButtonPressed)
-        {
-            ReelsController.RequestStop();
-            _PlayButtonPressed = false;
-        }  
-
         if(ReelsController.Spinning == false)
         {
             rtn = WinPresentationState;
@@ -57,10 +41,5 @@ public class SpinState : State
     public void SetDemoSymbols(int[] symbols)
     {
         _DemoSymbols = symbols;
-    }
-
-    public void PlayButtonPressed()
-    {
-        _PlayButtonPressed = true;
     }
 }
