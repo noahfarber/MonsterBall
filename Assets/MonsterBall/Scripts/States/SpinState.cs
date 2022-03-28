@@ -7,24 +7,26 @@ public class SpinState : State
 {
     public ReelSpinController ReelsController;
     [SerializeField] private State WinPresentationState;
+    private bool _PlayButtonPressed = false;
     private int[] _DemoSymbols;
 
     public override void OnStateEnter()
     {
-        if(_DemoSymbols != null)
-        {
-            ReelsController.RequestSpin(_DemoSymbols);
-        }
-        else
-        {
-            ReelsController.RequestSpin();
-        }
+        _PlayButtonPressed = false;
+        ReelsController.Spin();
     }
 
     public override State OnUpdate()
     {
         State rtn = null;
         
+        if(_PlayButtonPressed) // Quick stop requested
+        {
+            ReelsController.RequestStop();
+            _PlayButtonPressed = false;
+        }  
+
+        // Transition check
         if(ReelsController.Spinning == false)
         {
             rtn = WinPresentationState;
@@ -38,8 +40,8 @@ public class SpinState : State
         _DemoSymbols = null;
     }
 
-    public void SetDemoSymbols(int[] symbols)
+    public void PlayButtonPressed()
     {
-        _DemoSymbols = symbols;
+        _PlayButtonPressed = true;
     }
 }
