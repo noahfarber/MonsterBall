@@ -20,9 +20,7 @@ public class IdleState : State
         {
             if (Central.GlobalData.Money > Central.GlobalData.BetAmount)
             {
-                Central.GlobalData.Money.Value -= Central.GlobalData.BetAmount;
-                IncrementerManager.Instance.WinMeter.SetValue(0);
-                rtn = SpinState;
+                rtn = StartSpin();
             }
 
             _TryStartGame = false;
@@ -30,38 +28,43 @@ public class IdleState : State
 
         if(Input.GetKeyDown(KeyCode.KeypadPeriod))
         {
-            SpinState.SetDemoSymbols(new int[3] { 0, 0, 0 });
+            rtn = GafSpin(new int[3] { 0, 0, 0 });
         }
-
+        if (Input.GetKeyDown(KeyCode.Keypad0))
+        {
+            rtn = GafSpin(new int[3] { 0, 0, 0 });
+        }
         if (Input.GetKeyDown(KeyCode.Keypad1))
         {
-            SpinState.SetDemoSymbols(new int[3] { 0, 0, 0 });
-            rtn = SpinState;
+            rtn = GafSpin(new int[3] { 1, 1, 1 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad2))
         {
-            SpinState.SetDemoSymbols(new int[3] { 1, 1, 1 });
-            rtn = SpinState;
+            rtn = GafSpin(new int[3] { 2, 2, 2 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad3))
         {
-            SpinState.SetDemoSymbols(new int[3] { 2, 2, 2 });
-            rtn = SpinState;
+            rtn = GafSpin(new int[3] { 3, 3, 3 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad4))
         {
-            SpinState.SetDemoSymbols(new int[3] { 3, 3, 3 });
-            rtn = SpinState;
+            rtn = GafSpin(new int[3] { 4, 4, 4 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad5))
         {
-            SpinState.SetDemoSymbols(new int[3] { 4, 4, 4 });
-            rtn = SpinState;
+            rtn = GafSpin(new int[3] { 5, 5, 5 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad6))
         {
-            SpinState.SetDemoSymbols(new int[3] { 5, 5, 5 });
-            rtn = SpinState;
+            rtn = GafSpin(new int[3] { 6, 6, 6 });
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad7))
+        {
+            rtn = GafSpin(new int[3] { 7, 7, 7 });
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            rtn = GafSpin(new int[3] { 8, 8, 8 });
         }
 
         return rtn;
@@ -77,4 +80,26 @@ public class IdleState : State
         _TryStartGame = true;
     }
 
+
+    private State GafSpin(int[] demoSymbols)
+    {
+        IncrementerManager.Instance.WinMeter.SetValue(0); // Clear Win Meter
+        Math.Instance.GenerateOutcome(demoSymbols);
+        return SpinState;
+    }
+
+    private State StartSpin()
+    {
+        IncrementerManager.Instance.WinMeter.SetValue(0); // Clear Win Meter
+        Math.Instance.GenerateOutcome();
+        Central.GlobalData.Money.Value -= Central.GlobalData.BetAmount; // Subtract Money
+
+        return SpinState;
+    }
+
+}
+
+public class WinAnalyzer
+{
+    
 }

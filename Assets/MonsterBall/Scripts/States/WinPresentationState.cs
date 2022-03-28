@@ -6,16 +6,14 @@ using Framework;
 public class WinPresentationState : State
 {
     [SerializeField] private State EndGameState;
-    [SerializeField] private IncrementerUI WinsIncrementer;
-    [SerializeField] private IncrementerUI CreditsIncrementer;
-
+    [SerializeField] private ParticleSystem[] ReelParticles;
     public override void OnStateEnter()
     {
-        if(Central.GlobalData.TotalWon > 0)
+        if(Central.GlobalData.GameData.TotalWon > 0)
         {
-            float incrementTime = Central.GlobalData.TotalWon * .1f;
-            WinsIncrementer.Increment(Central.GlobalData.TotalWon, incrementTime);
-            CreditsIncrementer.Increment(Central.GlobalData.Money + Central.GlobalData.TotalWon, incrementTime, Central.GlobalData.Money);
+            float incrementTime = Central.GlobalData.GameData.TotalWon * .1f;
+            IncrementerManager.Instance.WinMeter.Increment(Central.GlobalData.GameData.TotalWon, incrementTime);
+            IncrementerManager.Instance.CreditMeter.Increment(Central.GlobalData.Money + Central.GlobalData.GameData.TotalWon, incrementTime, Central.GlobalData.Money);
         }
     }
 
@@ -31,6 +29,6 @@ public class WinPresentationState : State
 
     public override void OnStateExit()
     {
-        Central.GlobalData.Money.Value += Central.GlobalData.TotalWon;
+        Central.GlobalData.Money.Value += Central.GlobalData.GameData.TotalWon; // Add win value to money
     }
 }

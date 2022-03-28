@@ -5,6 +5,9 @@ using Framework;
 
 public class ReelSpinController : MonoBehaviour
 {
+    public static ReelSpinController Instance;
+    public Math Math;
+
     [HideInInspector] public bool Spinning = false;
     public int ReelCount = 3;
     public int VisibleSymbolsCount = 3;
@@ -18,21 +21,25 @@ public class ReelSpinController : MonoBehaviour
 
     public GameObject ReelPrefab;
     public GameObject SymbolPrefab;
-
-    public ReelStrip[] ReelStrips;
-    public SymbolData[] SymbolInfo;
     
     public System.Action<int> ReelStopped;
 
     private int[] ReelPosition = new int[3] { 0, 0, 0 };
-    private int[] ReelsEndPosition = new int[3] { 0, 5, 12 };
-    private int[][] ReelsResult;
+    public int[] ReelsEndPosition = new int[3] { 0, 5, 12 };
     private Reel[] Reels;
 
     private int[] _NumFinalSymbolsFilled = new int[3] { 0, 0, 0 };
     private ReelSymbol[] _PaylineSymbols = new ReelSymbol[3];
 
     private float _CurrentSpinSpeed;
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }    
+    }
 
     private void Start()
     {
@@ -47,29 +54,9 @@ public class ReelSpinController : MonoBehaviour
         CheckSpin();
     }
 
-
-    public void GenerateReelsEndPosition(DazzleSpinData outcome)
-    {
-        List<int> stops = new List<int>();
-        stops = Central.MathGenerator.StringToIntList(outcome.stops);
-
-        if (stops.Count == ReelsEndPosition.Length)
-        {
-            for (int i = 0; i < ReelsEndPosition.Length; ++i)
-            {
-                ReelsEndPosition[i] = stops[i];
-            }
-        }
-        else
-        {
-            Debug.LogError("Bz reel stops and slots generation stops have a length mismatch.");
-        }
-    }
-
     public void GenerateReels()
     {
         Reels = new Reel[ReelCount];
-        ReelsResult = new int[ReelCount][];
 
         for (int r = 0; r < ReelCount; r++)
         {
@@ -86,12 +73,12 @@ public class ReelSpinController : MonoBehaviour
                 GameObject symbol = Instantiate(SymbolPrefab, reelPrefab.transform);
                 ReelSymbol rSymbol = symbol.GetComponent<ReelSymbol>();
                 Vector3 startPosition = new Vector3(reelPrefab.transform.position.x, ((SymbolHeight * ReelPaddingAmount * 2) - (SymbolHeight * s)) / 100f, 0f);
-                int symbolPos = Modulo(s - ReelPaddingAmount - DisplayOffset, ReelStrips[r].Symbols.Length);
-                int symbolID = ReelStrips[r].Symbols[symbolPos];
+                int symbolPos = Modulo(s - ReelPaddingAmount - DisplayOffset, Math.ReelStrips[r].Symbols.Length);
+                int symbolID = Math.ReelStrips[r].Symbols[symbolPos];
                 symbol.transform.position = startPosition;
 
                 rSymbol.Transform = symbol.transform;
-                rSymbol.SpriteRenderer.sprite = GetSpriteByIndex(r, symbolPos);
+                rSymbol.SpriteRenderer.sprite = Math.GetSpriteByIndex(r, symbolPos);
                 Reels[r].Symbols.Add(rSymbol);
                 Reels[r].LiveSymbols.Add(rSymbol);
                 Reels[r].Symbols[s].Position = startPosition;
@@ -108,32 +95,12 @@ public class ReelSpinController : MonoBehaviour
         }
     }
     
-    public void Spin(DazzleSpinData spinData)
-    {
-        Spin(spinData, null);
-
-    }
-
-    public void Spin(int[] demoSymbols)
-    {
-        Spin(null, demoSymbols);
-    }
-
-    private void Spin(DazzleSpinData spinData = null, int[] demoSymbols = null)
+    public void Spin()
     {
         if(!Spinning)
         {
             Spinning = true;
             _CurrentSpinSpeed = DefaultSpinSpeed;
-
-            if (demoSymbols == null)
-            {
-                GenerateReelsEndPosition(spinData);
-            }
-            else
-            {
-                Central.MathGenerator.Outcome = null;
-            }
 
             for (int r = 0; r < Reels.Length; r++)
             {
@@ -142,74 +109,9 @@ public class ReelSpinController : MonoBehaviour
                 Reels[r].State = ReelStates.Spinning;
                 Reels[r].SpinTimer = 0f;
 
-                if (demoSymbols != null)
-                {
-                    if (demoSymbols.Length != ReelsEndPosition.Length)
-                    {
-                        Debugger.Instance.LogError("Incorrect amount of symbols provided: " + demoSymbols.Length);
-                    }
-                    else
-                    {
-                        ReelsEndPosition[r] = GetEndPositionFromSymbol(r, demoSymbols[r]);
-                    }
-                }
-
-                if (ReelsResult[r] == null) { ReelsResult[r] = new int[3]; }
-
-                for (int s = 0; s < ReelsResult[r].Length; s++)
-                {
-                    ReelsResult[r][s] = ReelStrips[r].Symbols[Modulo(ReelsEndPosition[r] + s - ReelPaddingAmount, ReelStrips[r].Symbols.Length)];
-                }
-
             }
-
-            //LogEndPos();
-            //LogReelsResult();
-            LogPayline();
         }
     }
-
-    /*public List<WinDetail> EvaluateWin()
-    {
-        List<WinDetail> details = new List<WinDetail>();
-
-        for (int s = 0; s < SymbolInfo.Length; s++)
-        {
-            int symbolID = SymbolInfo[s].SymbolID;
-            PayEntry[] payEntry = GetSymbolPay(symbolID);
-            int count = 0;
-
-            for (int i = 0; i < ReelsEndPosition.Length; i++)
-            {
-                int symbol = GetSymbolFromEndPos(i, ReelsEndPosition[i]);
-                if(symbol == SymbolInfo[s].SymbolID)
-                {
-                    count++;
-                }
-            }
-
-            for (int e = 0; e < payEntry.Length; e++)
-            {
-                if(payEntry[e].PayMode == PayModes.Line)
-                {
-                    for (int i = 0; i < payEntry[e].PayData.Length; i++)
-                    {
-                        if (count == payEntry[e].PayData[i].NumSymbols)
-                        {
-                            WinDetail detailWon = new WinDetail();
-                            detailWon.SymbolID = symbolID;
-                            detailWon.SymbolCount = count;
-                            detailWon.Pay = payEntry[e].PayData[i].Pay;
-                            details.Add(detailWon);
-                        }
-                    }
-                }
-                //else if( )
-            }
-        }
-
-        return details;
-    }*/
 
     private void StopAllReels()
     {
@@ -337,14 +239,8 @@ public class ReelSpinController : MonoBehaviour
 
         if (Reels[r].State == ReelStates.Stopping)
         {
-            int newReelPos = Modulo(-ReelsEndPosition[r] - ReelsResult[r].Length + _NumFinalSymbolsFilled[r], ReelStrips[r].Symbols.Length);
-            int checkSymbolIndex = Modulo(-newReelPos - ReelPaddingAmount - DisplayOffset, ReelStrips[r].Symbols.Length);
-
-            /*if((ReelStrips[r].Symbols[checkSymbolIndex] == 0 && symbol.SymbolID == 0) ||
-                (ReelStrips[r].Symbols[checkSymbolIndex] != 0 && symbol.SymbolID != 0))
-            {
-                
-            }*/
+            int newReelPos = Modulo(-ReelsEndPosition[r] - Central.GlobalData.GameData.ReelsResult[r].Length + _NumFinalSymbolsFilled[r], Math.ReelStrips[r].Symbols.Length);
+            int checkSymbolIndex = Modulo(-newReelPos - ReelPaddingAmount - DisplayOffset, Math.ReelStrips[r].Symbols.Length);
 
             ReelPosition[r] = newReelPos;
             _NumFinalSymbolsFilled[r]++;
@@ -354,9 +250,9 @@ public class ReelSpinController : MonoBehaviour
             }
         }
 
-        int newSymbolIndex = Modulo(-ReelPosition[r] - ReelPaddingAmount - DisplayOffset, ReelStrips[r].Symbols.Length);
-        int symbolID = ReelStrips[r].Symbols[newSymbolIndex];
-        Reels[r].Symbols[s].SpriteRenderer.sprite = GetSpriteByIndex(r, newSymbolIndex);
+        int newSymbolIndex = Modulo(-ReelPosition[r] - ReelPaddingAmount - DisplayOffset, Math.ReelStrips[r].Symbols.Length);
+        int symbolID = Math.ReelStrips[r].Symbols[newSymbolIndex];
+        Reels[r].Symbols[s].SpriteRenderer.sprite = Math.GetSpriteByIndex(r, newSymbolIndex);
         Reels[r].Symbols[s].SymbolID = symbolID;
     }
 
@@ -372,103 +268,6 @@ public class ReelSpinController : MonoBehaviour
         }
 
         return rtn;
-    }
-
-    private int GetEndPositionFromSymbol(int r, int symbol)
-    {
-        List<int> rtn = new List<int>();
-
-        for (int s = 0; s < ReelStrips[r].Symbols.Length; s++)
-        {
-            int check = ReelStrips[r].Symbols[s];
-
-            if (check == symbol)
-            {
-                rtn.Add(s);
-            }
-        }
-
-        if (rtn.Count == 0)
-        {
-            Debugger.Instance.LogError("Couldn't find symbol: " + symbol + " on reel strip " + r);
-        }
-
-        return rtn[Random.Range(0, rtn.Count)];
-    }
-
-    private int GetSymbolFromEndPos(int r, int endPos)
-    {
-        return ReelStrips[r].Symbols[endPos];
-    }
-
-    private Sprite GetSpriteByIndex(int reel, int index)
-    {
-        return SymbolInfo[ReelStrips[reel].Symbols[index]].Image;
-    }
-
-    private PayEntry[] GetSymbolPay(int symbol)
-    {
-        PayEntry[] rtn = new PayEntry[0];
-        for (int i = 0; i < SymbolInfo.Length; i++)
-        {
-            if (SymbolInfo[i].SymbolID == symbol)
-            {
-                rtn = SymbolInfo[i].PayInfo;
-            }
-        }
-
-        return rtn;
-    }
-
-    private string GetSymbolNameByID(int id)
-    {
-        return SymbolInfo[id].Name;
-    }
-
-    private string GetSymbolName(int reel, int index)
-    {
-        return SymbolInfo[ReelStrips[reel].Symbols[index]].Name;
-    }
-
-    private void LogReelsResult()
-    {
-        string str = "";
-
-        for (int r = 0; r < ReelsResult.Length; r++)
-        {
-            str += "Reel: " + r + ": ";
-            for (int s = 0; s < ReelsResult[r].Length; s++)
-            {
-                str += ReelsResult[r][s] + " ";
-            }
-            str += "   ";
-        }
-
-        Debugger.Instance.Log("Reels Result: " + str);
-    }
-
-    private void LogPayline()
-    {
-        string str = "";
-
-        for (int r = 0; r < ReelsResult.Length; r++)
-        {
-            str += GetSymbolNameByID(ReelsResult[r][1]) + " ";
-        }
-
-        Debugger.Instance.Log("Reels Result: " + str);
-    }
-
-    private void LogEndPos()
-    {
-        string str = "";
-
-        for (int r = 0; r < ReelsResult.Length; r++)
-        {
-            str += ReelsEndPosition[r] + " ";
-        }
-
-        Debugger.Instance.Log("Reels End Pos: " + str);
     }
 
     private int Modulo(int x, int m)
@@ -487,9 +286,11 @@ public class ReelStrip
 public class SymbolData
 {
     public string Name;
+    public SymbolType Type;
     public int SymbolID;
     public Sprite Image;
     public PayEntry[] PayInfo;
+    public bool DoesWildReplace = true;
 }
 
 [System.Serializable]
@@ -513,9 +314,10 @@ public enum PayModes
     Scattered
 }
 
-public class WinDetail
+[System.Serializable]
+public enum SymbolType
 {
-    public int SymbolID;
-    public int SymbolCount;
-    public int Pay;
+    Normal,
+    Wild,
+    Blank
 }
