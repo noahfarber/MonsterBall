@@ -76,8 +76,8 @@ public class GameData
 
 public class WinDetail
 {
-    public int SymbolID;
-    public int SymbolCount;
-    public PayModes PayMode;
-    public int Pay;
+    public int SymbolID = -1;
+    public int SymbolCount = -1;
+    public PayModes PayMode = PayModes.None;
+    public int Pay = 0;
 }

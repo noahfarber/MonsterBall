@@ -311,7 +311,8 @@ public struct PayData
 public enum PayModes
 {
     Line,
-    Scattered
+    Scattered,
+    None
 }
 
 [System.Serializable]
@@ -319,5 +320,6 @@ public enum SymbolType
 {
     Normal,
     Wild,
+    MixedBar,
     Blank
 }

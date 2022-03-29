@@ -9,11 +9,11 @@ public class WinPresentationState : State
     [SerializeField] private ParticleSystem[] ReelParticles;
     public override void OnStateEnter()
     {
-        if(Central.GlobalData.GameData.TotalWon > 0)
+        if(Central.GlobalData.GameData.SpinWin > 0)
         {
-            float incrementTime = Central.GlobalData.GameData.TotalWon * .1f;
-            IncrementerManager.Instance.WinMeter.Increment(Central.GlobalData.GameData.TotalWon, incrementTime);
-            IncrementerManager.Instance.CreditMeter.Increment(Central.GlobalData.Money + Central.GlobalData.GameData.TotalWon, incrementTime, Central.GlobalData.Money);
+            float incrementTime = Central.GlobalData.GameData.SpinWin * .1f;
+            IncrementerManager.Instance.WinMeter.Increment(Central.GlobalData.GameData.SpinWin, incrementTime);
+            IncrementerManager.Instance.CreditMeter.Increment(Central.GlobalData.Money + Central.GlobalData.GameData.SpinWin, incrementTime, Central.GlobalData.Money);
         }
     }
 

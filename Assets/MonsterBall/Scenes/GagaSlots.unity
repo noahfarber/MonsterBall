@@ -5353,7 +5353,7 @@ Transform:
   - {fileID: 2762647449634706713}
   - {fileID: 2762647448190642735}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &344781395
 GameObject:
@@ -6875,7 +6875,7 @@ RectTransform:
   m_Children:
   - {fileID: 1109334689}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -17726,7 +17726,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1022029470
 GameObject:
@@ -18611,6 +18611,161 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1326844844}
   m_CullTransparentMesh: 1
+--- !u!1 &1338427681
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1338427683}
+  - component: {fileID: 1338427682}
+  m_Layer: 0
+  m_Name: Math
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1338427682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338427681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07e9142e00f37ff46bfe39186ac7143e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReelsController: {fileID: 2762647448190642732}
+  ReelStrips:
+  - Symbols: 06000000000000000300000000000000010000000000000002000000000000000800000000000000070000000000000004000000000000000500000000000000
+  - Symbols: 00000000080000000000000003000000000000000600000000000000020000000000000001000000000000000500000000000000040000000000000007000000
+  - Symbols: 05000000000000000700000000000000040000000000000003000000000000000100000000000000080000000000000006000000000000000200000000000000
+  SymbolInfo:
+  - Name: Blank
+    Type: 3
+    SymbolID: 0
+    Image: {fileID: 0}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 1
+    DoesWildReplace: 0
+  - Name: Cherry
+    Type: 0
+    SymbolID: 1
+    Image: {fileID: 21300000, guid: 22e21ae48f2f49842a3dc175c3e63051, type: 3}
+    PayInfo:
+    - PayMode: 1
+      PayData:
+      - NumSymbols: 1
+        Pay: 2
+      - NumSymbols: 2
+        Pay: 5
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 15
+    DoesWildReplace: 1
+  - Name: Bar1
+    Type: 0
+    SymbolID: 2
+    Image: {fileID: 21300000, guid: 7504d397aa1f68342af31f91fbc89270, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 10
+    DoesWildReplace: 1
+  - Name: Bar2
+    Type: 0
+    SymbolID: 3
+    Image: {fileID: 21300000, guid: b083c6fc370fe904ab14c1b2d20b6953, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 20
+    DoesWildReplace: 1
+  - Name: Bar3
+    Type: 0
+    SymbolID: 4
+    Image: {fileID: 21300000, guid: b35be57116c61cb4fa9a96f7e727f931, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 30
+    DoesWildReplace: 1
+  - Name: Bell
+    Type: 0
+    SymbolID: 5
+    Image: {fileID: 21300000, guid: 20bb75fbc54a30e47ac6baac94ed9fc6, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 50
+    DoesWildReplace: 1
+  - Name: Seven
+    Type: 0
+    SymbolID: 6
+    Image: {fileID: 21300000, guid: 3f4cb08f15d53c14bb0e473386f1f0ea, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 75
+    DoesWildReplace: 1
+  - Name: Diamond
+    Type: 0
+    SymbolID: 7
+    Image: {fileID: 21300000, guid: 6e38435844ad8094b955f29bdd50ca0a, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 100
+    DoesWildReplace: 1
+  - Name: Wild
+    Type: 1
+    SymbolID: 8
+    Image: {fileID: 21300000, guid: f7694c34bebda154ebcf34ddc2827b78, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 1000
+    DoesWildReplace: 1
+  - Name: Multi-Bar
+    Type: 2
+    SymbolID: 9
+    Image: {fileID: 21300000, guid: d4d7eb2f563f4b74bbc6bd8d7e09febd, type: 3}
+    PayInfo:
+    - PayMode: 0
+      PayData:
+      - NumSymbols: 3
+        Pay: 5
+    DoesWildReplace: 1
+--- !u!4 &1338427683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338427681}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1343517743
 GameObject:
   m_ObjectHideFlags: 0
@@ -19530,7 +19685,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2124537694
 GameObject:
@@ -19809,7 +19964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c0e1ce58a7495488e9950a18c2d7e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Math: {fileID: 2762647448190642734}
+  Math: {fileID: 1338427682}
   Spinning: 0
   ReelCount: 3
   VisibleSymbolsCount: 3
@@ -19831,7 +19986,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2762647448190642735}
   - component: {fileID: 2762647448190642732}
-  - component: {fileID: 2762647448190642734}
   m_Layer: 0
   m_Name: Reels
   m_TagString: Untagged
@@ -19839,128 +19993,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2762647448190642734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2762647448190642733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07e9142e00f37ff46bfe39186ac7143e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ReelsController: {fileID: 2762647448190642732}
-  ReelStrips:
-  - Symbols: 06000000000000000300000000000000010000000000000002000000000000000800000000000000070000000000000004000000000000000500000000000000
-  - Symbols: 00000000080000000000000003000000000000000600000000000000020000000000000001000000000000000500000000000000040000000000000007000000
-  - Symbols: 05000000000000000700000000000000040000000000000003000000000000000100000000000000080000000000000006000000000000000200000000000000
-  SymbolInfo:
-  - Name: Blank
-    Type: 2
-    SymbolID: 0
-    Image: {fileID: 0}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 1
-    DoesWildReplace: 0
-  - Name: Cherry
-    Type: 0
-    SymbolID: 1
-    Image: {fileID: 21300000, guid: 22e21ae48f2f49842a3dc175c3e63051, type: 3}
-    PayInfo:
-    - PayMode: 1
-      PayData:
-      - NumSymbols: 1
-        Pay: 5
-      - NumSymbols: 2
-        Pay: 15
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 15
-    DoesWildReplace: 1
-  - Name: Bar1
-    Type: 0
-    SymbolID: 2
-    Image: {fileID: 21300000, guid: 7504d397aa1f68342af31f91fbc89270, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 10
-    DoesWildReplace: 1
-  - Name: Bar2
-    Type: 0
-    SymbolID: 3
-    Image: {fileID: 21300000, guid: b083c6fc370fe904ab14c1b2d20b6953, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 20
-    DoesWildReplace: 1
-  - Name: Bar3
-    Type: 0
-    SymbolID: 4
-    Image: {fileID: 21300000, guid: b35be57116c61cb4fa9a96f7e727f931, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 30
-    DoesWildReplace: 1
-  - Name: Bell
-    Type: 0
-    SymbolID: 5
-    Image: {fileID: 21300000, guid: 20bb75fbc54a30e47ac6baac94ed9fc6, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 50
-    DoesWildReplace: 1
-  - Name: Seven
-    Type: 0
-    SymbolID: 6
-    Image: {fileID: 21300000, guid: 3f4cb08f15d53c14bb0e473386f1f0ea, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 75
-    DoesWildReplace: 1
-  - Name: Diamond
-    Type: 0
-    SymbolID: 7
-    Image: {fileID: 21300000, guid: 6e38435844ad8094b955f29bdd50ca0a, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData: []
-    DoesWildReplace: 1
-  - Name: Wild
-    Type: 0
-    SymbolID: 8
-    Image: {fileID: 21300000, guid: f7694c34bebda154ebcf34ddc2827b78, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 1000
-    DoesWildReplace: 1
-  - Name: Multi-Bar
-    Type: 0
-    SymbolID: 9
-    Image: {fileID: 21300000, guid: d4d7eb2f563f4b74bbc6bd8d7e09febd, type: 3}
-    PayInfo:
-    - PayMode: 0
-      PayData:
-      - NumSymbols: 3
-        Pay: 5
-    DoesWildReplace: 1
 --- !u!4 &2762647448190642735
 Transform:
   m_ObjectHideFlags: 0

@@ -44,8 +44,8 @@ public class Math : MonoBehaviour
 
         Central.GlobalData.GameData.CurrentSpin = spinData;
         Central.GlobalData.GameData.LastOutCome = outcome;
-        Central.GlobalData.GameData.SpinWin.Value = spinData.spinAward * Central.GlobalData.BetMultiplier;
-        Central.GlobalData.GameData.TotalWon.Value = outcome.TotalAward * Central.GlobalData.BetMultiplier;
+        /*Central.GlobalData.GameData.SpinWin.Value = spinData.spinAward * Central.GlobalData.BetMultiplier;
+        Central.GlobalData.GameData.TotalWon.Value = outcome.TotalAward * Central.GlobalData.BetMultiplier;*/
 
         if (demoSymbols == null)
         {
@@ -59,7 +59,127 @@ public class Math : MonoBehaviour
 
         Central.GlobalData.GameData.ReelsResult = GetReelsResult();
 
-        // EVALUATE WIN HERE
+        Central.GlobalData.GameData.WinDetail = EvaluateWin();
+
+        Central.GlobalData.GameData.TotalWon.Value = outcome.TotalAward * Central.GlobalData.BetMultiplier;
+        Central.GlobalData.GameData.SpinWin.Value = Central.GlobalData.GameData.WinDetail.Pay * Central.GlobalData.BetMultiplier;
+
+
+        if (Central.GlobalData.GameData.WinDetail == null && spinData.totalAward > 0)
+        {
+            Debugger.Instance.LogError("Couldn't find win detail... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward);
+        }
+        else if(Central.GlobalData.GameData.WinDetail != null)
+        {
+            if(Central.GlobalData.GameData.SpinWin.Value != spinData.spinAward && demoSymbols == null)
+            {
+                Debugger.Instance.LogError("Wrong pay value " + Central.GlobalData.GameData.SpinWin.Value + " ... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward);
+            }
+        }
+    }
+
+    private SymbolData GetSymbolDataByID(int symbol)
+    {
+        for (int s = 0; s < SymbolInfo.Length; s++)
+        {
+            if(SymbolInfo[s].SymbolID == symbol)
+            {
+                return SymbolInfo[s];
+            }
+        }
+
+        Debugger.Instance.LogError("Couldn't find symbol data for symbol: " + symbol);
+        return new SymbolData();
+    }
+
+    public WinDetail EvaluateWin()
+    {
+        WinDetail detail = new WinDetail();
+        detail.PayMode = PayModes.None;
+
+        SymbolData[] symbolData = SymbolInfo;
+
+        for (int s = 0; s < symbolData.Length; s++)
+        {
+            int checkSymbol = symbolData[s].SymbolID;
+            PayEntry[] payEntry = GetSymbolPay(checkSymbol);
+            int count = 0;
+
+            for (int i = 0; i < Central.GlobalData.GameData.ReelsResult.Length; i++)
+            {
+                int symbol = Central.GlobalData.GameData.ReelsResult[i][1];
+                if (symbol == symbolData[s].SymbolID || (symbolData[s].DoesWildReplace && GetSymbolDataByID(symbol).Type == SymbolType.Wild))
+                {
+                    count++;
+                }
+            }
+
+            if(symbolData[s].Type == SymbolType.MixedBar)
+            {
+                int b1 = 0;
+                int b2 = 0;
+                int b3 = 0;
+                int w = 0;
+
+                for (int i = 0; i < Central.GlobalData.GameData.ReelsResult.Length; i++)
+                {
+                    int symbol = Central.GlobalData.GameData.ReelsResult[i][1];
+                    if (symbol == 2)
+                    {
+                        b1++;
+                    }
+                    else if (symbol == 3)
+                    {
+                        b2++;
+                    }
+                    else if (symbol == 4)
+                    {
+                        b3++;
+                    }
+                    else if (GetSymbolDataByID(symbol).Type == SymbolType.Wild)
+                    {
+                        w++;
+                    }
+
+                    if(b1+b2+b3+w == 3 && b1 != 3 && b2 != 3 && w != 3)
+                    {
+                        count = 3;
+                    }
+                }
+            }
+
+            for (int e = 0; e < payEntry.Length; e++)
+            {
+                if (payEntry[e].PayMode == PayModes.Line)
+                {
+                    for (int i = 0; i < payEntry[e].PayData.Length; i++)
+                    {
+                        if (count == payEntry[e].PayData[i].NumSymbols)
+                        {
+                            detail.SymbolID = checkSymbol;
+                            detail.SymbolCount = count;
+                            detail.PayMode = PayModes.Line;
+                            detail.Pay = payEntry[e].PayData[i].Pay;
+                        }
+                    }
+                }
+                else if (payEntry[e].PayMode == PayModes.Scattered)
+                {
+                    for (int i = 0; i < payEntry[e].PayData.Length; i++)
+                    {
+                        if (count == payEntry[e].PayData[i].NumSymbols)
+                        {
+                            detail.SymbolID = checkSymbol;
+                            detail.SymbolCount = count;
+                            detail.PayMode = PayModes.Scattered;
+                            detail.Pay = payEntry[e].PayData[i].Pay;
+                        }
+                    }
+                }
+            }
+        }
+
+        return detail;
     }
 
     public void SetDemoSymbols(int[] symbols)
@@ -223,47 +343,4 @@ public class Math : MonoBehaviour
     {
         return (x % m + m) % m;
     }
-
-    /*public WinDetail EvaluateWin()
-    {
-        WinDetail detail = new WinDetail();
-        SymbolData[] symbolData = ReelSpinController.Instance.SymbolInfo;
-
-        for (int s = 0; s < symbolData.Length; s++)
-        {
-            int symbolID = symbolData[s].SymbolID;
-            PayEntry[] payEntry = GetSymbolPay(symbolID);
-            int count = 0;
-
-            for (int i = 0; i < ReelsEndPosition.Length; i++)
-            {
-                int symbol = GetSymbolFromEndPos(i, ReelsEndPosition[i]);
-                if (symbol == SymbolInfo[s].SymbolID)
-                {
-                    count++;
-                }
-            }
-
-            for (int e = 0; e < payEntry.Length; e++)
-            {
-                if (payEntry[e].PayMode == PayModes.Line)
-                {
-                    for (int i = 0; i < payEntry[e].PayData.Length; i++)
-                    {
-                        if (count == payEntry[e].PayData[i].NumSymbols)
-                        {
-                            WinDetail detailWon = new WinDetail();
-                            detailWon.SymbolID = symbolID;
-                            detailWon.SymbolCount = count;
-                            detailWon.Pay = payEntry[e].PayData[i].Pay;
-                            detail.Add(detailWon);
-                        }
-                    }
-                }
-                //else if( )
-            }
-        }
-
-        return detail;
-    }*/
 }
