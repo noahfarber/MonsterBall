@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -18793,13 +18793,13 @@ MonoBehaviour:
     Duration: 2
     Clip: {fileID: 0}
   - MaxBetMultiple: 5
-    Duration: 4
+    Duration: 3
     Clip: {fileID: 0}
-  - MaxBetMultiple: 10
-    Duration: 6
+  - MaxBetMultiple: 16
+    Duration: 5
     Clip: {fileID: 0}
   - MaxBetMultiple: 999999
-    Duration: 20
+    Duration: 15
     Clip: {fileID: 0}
 --- !u!1 &1343517743
 GameObject:
