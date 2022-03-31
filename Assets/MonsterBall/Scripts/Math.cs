@@ -61,13 +61,15 @@ public class Math : MonoBehaviour
 
         Central.GlobalData.GameData.WinDetail = EvaluateWin();
 
-        Central.GlobalData.GameData.TotalWon.Value = outcome.TotalAward * Central.GlobalData.BetMultiplier;
-        Central.GlobalData.GameData.SpinWin.Value = Central.GlobalData.GameData.WinDetail.Pay * Central.GlobalData.BetMultiplier;
+        Central.GlobalData.GameData.TotalWon.Value = outcome.TotalAward;
+        Central.GlobalData.GameData.SpinWin.Value = Central.GlobalData.GameData.WinDetail.Pay;
 
 
         if (Central.GlobalData.GameData.WinDetail == null && spinData.totalAward > 0)
         {
-            Debugger.Instance.LogError("Couldn't find win detail... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward);
+            string log = "Couldn't find win detail... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward;
+            log += "  Reels: " + Central.GlobalData.GameData.ReelsResult[0][1] + "," + Central.GlobalData.GameData.ReelsResult[1][1] + "," + Central.GlobalData.GameData.ReelsResult[2][1];
+            Debugger.Instance.LogError(log);
         }
         else if(Central.GlobalData.GameData.WinDetail != null)
         {
@@ -104,10 +106,10 @@ public class Math : MonoBehaviour
             int checkSymbol = symbolData[s].SymbolID;
             PayEntry[] payEntry = GetSymbolPay(checkSymbol);
             int count = 0;
-
-            for (int i = 0; i < Central.GlobalData.GameData.ReelsResult.Length; i++)
+            int[][] reelsResult = Central.GlobalData.GameData.ReelsResult;
+            for (int i = 0; i < reelsResult.Length; i++)
             {
-                int symbol = Central.GlobalData.GameData.ReelsResult[i][1];
+                int symbol = reelsResult[i][1];
                 if (symbol == symbolData[s].SymbolID || (symbolData[s].DoesWildReplace && GetSymbolDataByID(symbol).Type == SymbolType.Wild))
                 {
                     count++;
@@ -121,27 +123,32 @@ public class Math : MonoBehaviour
                 int b3 = 0;
                 int w = 0;
 
-                for (int i = 0; i < Central.GlobalData.GameData.ReelsResult.Length; i++)
-                {
-                    int symbol = Central.GlobalData.GameData.ReelsResult[i][1];
-                    if (symbol == 2)
-                    {
-                        b1++;
-                    }
-                    else if (symbol == 3)
-                    {
-                        b2++;
-                    }
-                    else if (symbol == 4)
-                    {
-                        b3++;
-                    }
-                    else if (GetSymbolDataByID(symbol).Type == SymbolType.Wild)
-                    {
-                        w++;
-                    }
+                int b1SymbolID = 2;
+                int b2SymbolID = 3;
+                int b3SymbolID = 4;
 
-                    if(b1+b2+b3+w == 3 && b1 != 3 && b2 != 3 && w != 3)
+                for (int i = 0; i < reelsResult.Length; i++)
+                {
+                    int check = reelsResult[i][1];
+                    if (check >= 0)
+                    {
+                        if (GetSymbolDataByID(check).Type == SymbolType.Wild)
+                        { w++; }
+
+                        if (check == b1SymbolID)
+                        { b1++; }
+                        else if (check == b2SymbolID)
+                        { b2++; }
+                        else if (check == b3SymbolID)
+                        { b3++; }
+                    }
+                }
+
+                if (w + b1 + b2 + b3 == 3 && w < 3)
+                {
+                    if ((b1 > 0 && b2 > 0) ||
+                        (b2 > 0 && b3 > 0) ||
+                        (b1 > 0 && b3 > 0))
                     {
                         count = 3;
                     }

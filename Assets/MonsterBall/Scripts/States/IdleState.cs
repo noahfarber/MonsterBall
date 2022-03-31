@@ -56,7 +56,7 @@ public class IdleState : State
         }
         if (Input.GetKeyDown(KeyCode.Keypad6))
         {
-            rtn = GafSpin(new int[3] { 6, 6, 6 });
+            rtn = GafSpin(new int[3] { 1, 6, 6 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad7))
         {
