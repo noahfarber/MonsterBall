@@ -14,6 +14,8 @@ public class WinPresentationState : State
     {
         if(Central.GlobalData.GameData.SpinWin > 0)
         {
+            WinSource.clip = null;
+
             float incrementTime = 0f;
             for (int i = 0; i < WinConfig.SoundConfig.Length; i++)
             {
@@ -29,11 +31,18 @@ public class WinPresentationState : State
                 }
             }
 
-            Debug.LogError("Incrementing at " + incrementTime + " seconds");
+            //Debug.LogError("Incrementing at " + incrementTime + " seconds");
 
             int spinWin = Central.GlobalData.GameData.SpinWin * Central.GlobalData.BetMultiplier;
             IncrementerManager.Instance.WinMeter.Increment(spinWin, incrementTime);
             IncrementerManager.Instance.CreditMeter.Increment(Central.GlobalData.Money + spinWin, incrementTime, Central.GlobalData.Money);
+            
+            if(WinSource.clip != null && WinSource.clip.length >= .5f)
+            {
+                SoundManager.Instance.Fade(SoundConfig.Instance.BackgroundMusic, .25f, .5f);
+            }
+
+            SoundManager.Instance.PlayAndFade(WinSource, 1f, .2f, 0f);
         }
     }
 
@@ -42,6 +51,11 @@ public class WinPresentationState : State
         State rtn = null;
         if(!IncrementerManager.Instance.Incrementing())
         {
+            if(SoundConfig.Instance.BackgroundMusic.volume != 1f)
+            {
+                SoundManager.Instance.Fade(SoundConfig.Instance.BackgroundMusic, 1f, 1f);
+            }
+
             rtn = EndGameState;
         }
         return rtn;
@@ -50,5 +64,6 @@ public class WinPresentationState : State
     public override void OnStateExit()
     {
         Central.GlobalData.Money.Value += Central.GlobalData.GameData.TotalWon * Central.GlobalData.BetMultiplier; // Add win value to money
+        SoundManager.Instance.Fade(WinSource, 0f, .25f);
     }
 }

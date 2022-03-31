@@ -18,7 +18,7 @@ public class IdleState : State
 
         if (_TryStartGame)
         {
-            if (Central.GlobalData.Money > Central.GlobalData.BetAmount)
+            if (Central.GlobalData.Money >= Central.GlobalData.BetAmount)
             {
                 rtn = StartSpin();
             }

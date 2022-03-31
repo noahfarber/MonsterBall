@@ -25,6 +25,7 @@ namespace Framework
             base.OnStateEnter();
             _Game.SetActive(true);
             AddCallbacks();
+            SoundConfig.Instance.PlayRandomBackgroundClip();
         }
 
         public override State OnUpdate()
@@ -51,6 +52,7 @@ namespace Framework
             base.OnStateExit();
             _Game.SetActive(false);
             RemoveCallbacks();
+            SoundManager.Instance.Stop(SoundConfig.Instance.BackgroundMusic);
         }
 
         public void PauseGame()
