@@ -53,7 +53,8 @@ public class WinPresentationState : State
 
             for (int i = 0; i < symbols.Length; i++)
             {
-                if(symbols[i] == Central.GlobalData.GameData.WinDetail.SymbolID || Math.Instance.GetSymbolDataByID(symbols[i]).Type == SymbolType.Wild)
+                if(symbols[i] == Central.GlobalData.GameData.WinDetail.SymbolID || Math.Instance.GetSymbolDataByID(symbols[i]).Type == SymbolType.Wild 
+                    || Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID).Type == SymbolType.MixedBar)
                 {
                     ReelParticles[i].Play();
                     WinBackgrounds[i].Play("Play");

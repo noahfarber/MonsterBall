@@ -85,6 +85,7 @@ public class IdleState : State
     private State GafSpin(int[] demoSymbols)
     {
         IncrementerManager.Instance.WinMeter.SetValue(0); // Clear Win Meter
+        WinState.StopReelParticles();
         Math.Instance.GenerateOutcome(demoSymbols);
         return SpinState;
     }
