@@ -291,6 +291,7 @@ public class SymbolData
     public SymbolType Type;
     public int SymbolID;
     public Sprite Image;
+    public Color AssociatedColor = Color.white;
     public PayEntry[] PayInfo;
     public bool DoesWildReplace = true;
 }

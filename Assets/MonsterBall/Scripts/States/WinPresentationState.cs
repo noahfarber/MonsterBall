@@ -7,6 +7,7 @@ public class WinPresentationState : State
 {
     [SerializeField] private State EndGameState;
     [SerializeField] private ParticleSystem[] ReelParticles;
+    [SerializeField] private Animator[] WinBackgrounds;
     [SerializeField] private WinDurationConfig WinConfig;
     [SerializeField] private AudioSource WinSource;
 
@@ -55,6 +56,8 @@ public class WinPresentationState : State
                 if(symbols[i] == Central.GlobalData.GameData.WinDetail.SymbolID || Math.Instance.GetSymbolDataByID(symbols[i]).Type == SymbolType.Wild)
                 {
                     ReelParticles[i].Play();
+                    WinBackgrounds[i].Play("Play");
+                    WinBackgrounds[i].GetComponent<SpriteRenderer>().color = Math.Instance.GetSymbolDataByID(symbols[i]).AssociatedColor;
                 }
             }
         }
@@ -81,12 +84,16 @@ public class WinPresentationState : State
         SoundManager.Instance.Fade(WinSource, 0f, .25f);
     }
 
-    public void StopReelParticles()
+    public void StopSymbolAnimations()
     {
         for (int i = 0; i < ReelParticles.Length; i++)
         {
             ReelParticles[i].Stop();
             ReelParticles[i].Clear();
+        }
+        for (int i = 0; i < WinBackgrounds.Length; i++)
+        {
+            WinBackgrounds[i].Play("Idle");
         }
     }
 }

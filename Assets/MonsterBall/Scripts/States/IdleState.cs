@@ -92,7 +92,7 @@ public class IdleState : State
     private State StartSpin()
     {
         IncrementerManager.Instance.WinMeter.SetValue(0); // Clear Win Meter
-        WinState.StopReelParticles();
+        WinState.StopSymbolAnimations();
         Math.Instance.GenerateOutcome();
         Central.GlobalData.Money.Value -= Central.GlobalData.BetAmount; // Subtract Money
 
