@@ -47,7 +47,7 @@ public class ReelSpinController : MonoBehaviour
         ReelStopped += OnReelStopped;
     }
 
-    float[] _SpinStopTimes = new float[3] { 1.25f, 1.75f, 2.25f };
+    float[] _SpinStopTimes = new float[3] { 1f, 1.5f, 2f };
 
     void Update()
     {
@@ -101,6 +101,7 @@ public class ReelSpinController : MonoBehaviour
         {
             Spinning = true;
             _CurrentSpinSpeed = DefaultSpinSpeed;
+            SoundConfig.Instance.PlayReelSpin();
 
             for (int r = 0; r < Reels.Length; r++)
             {
@@ -108,7 +109,6 @@ public class ReelSpinController : MonoBehaviour
                 _NumFinalSymbolsFilled[r] = 0;
                 Reels[r].State = ReelStates.Spinning;
                 Reels[r].SpinTimer = 0f;
-
             }
         }
     }
@@ -212,6 +212,7 @@ public class ReelSpinController : MonoBehaviour
     {
         Reel reel = Reels[r];
         reel.State = ReelStates.Idle;
+        SoundConfig.Instance.ReelStopped(r);
 
         for (int i = 0; i < Reels.Length; i++)
         {
@@ -221,6 +222,7 @@ public class ReelSpinController : MonoBehaviour
             }
         }
 
+        SoundConfig.Instance.StopReelSpin();
         Spinning = false;
     }
 
@@ -321,5 +323,6 @@ public enum SymbolType
     Normal,
     Wild,
     MixedBar,
-    Blank
+    Blank,
+    Bonus
 }

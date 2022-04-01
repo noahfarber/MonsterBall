@@ -6,6 +6,7 @@ using Framework;
 public class IdleState : State
 {
     [SerializeField] private SpinState SpinState;
+    [SerializeField] private WinPresentationState WinState;
     private bool _TryStartGame = false;
     public override void OnStateEnter()
     {
@@ -28,7 +29,7 @@ public class IdleState : State
 
         if(Input.GetKeyDown(KeyCode.KeypadPeriod))
         {
-            rtn = GafSpin(new int[3] { 0, 0, 0 });
+            rtn = GafSpin(new int[3] { 10, 10, 10 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad0))
         {
@@ -56,7 +57,7 @@ public class IdleState : State
         }
         if (Input.GetKeyDown(KeyCode.Keypad6))
         {
-            rtn = GafSpin(new int[3] { 1, 6, 6 });
+            rtn = GafSpin(new int[3] { 6, 6, 6 });
         }
         if (Input.GetKeyDown(KeyCode.Keypad7))
         {
@@ -91,6 +92,7 @@ public class IdleState : State
     private State StartSpin()
     {
         IncrementerManager.Instance.WinMeter.SetValue(0); // Clear Win Meter
+        WinState.StopReelParticles();
         Math.Instance.GenerateOutcome();
         Central.GlobalData.Money.Value -= Central.GlobalData.BetAmount; // Subtract Money
 

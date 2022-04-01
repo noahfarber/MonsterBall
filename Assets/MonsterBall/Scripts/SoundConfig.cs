@@ -7,6 +7,11 @@ public class SoundConfig : MonoBehaviour
 {
     public static SoundConfig Instance;
 
+    public AudioSource ReelSpin;
+    public AudioSource[] ReelStopSources;
+    public AudioClip[] SpecialStops;
+    public AudioClip ReelStop;
+
     public AudioSource BackgroundMusic;
     public AudioClip[] BackgroundClips;
     private int ClipIndex = 0;
@@ -46,5 +51,27 @@ public class SoundConfig : MonoBehaviour
 
         BackgroundMusic.clip = BackgroundClips[ClipIndex];
         SoundManager.Instance.PlayAndFade(BackgroundMusic, 1f, 1f, 0f);
+    }
+
+    public void PlayReelSpin()
+    {
+        SoundManager.Instance.Play(ReelSpin, 1f);
+    }
+    
+    public void StopReelSpin()
+    {
+        SoundManager.Instance.Stop(ReelSpin);
+    }
+
+    public void ReelStopped(int r)
+    {
+        AudioClip stopSound = ReelStop;
+
+        if(Central.GlobalData.GameData.ReelsResult[r][1] == 10) // If it's a bonus symbol
+        {
+            stopSound = SpecialStops[r];
+        }
+
+        SoundManager.Instance.PlayOneShot(stopSound, 1f);
     }
 }

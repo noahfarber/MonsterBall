@@ -80,7 +80,7 @@ public class Math : MonoBehaviour
         }
     }
 
-    private SymbolData GetSymbolDataByID(int symbol)
+    public SymbolData GetSymbolDataByID(int symbol)
     {
         for (int s = 0; s < SymbolInfo.Length; s++)
         {
