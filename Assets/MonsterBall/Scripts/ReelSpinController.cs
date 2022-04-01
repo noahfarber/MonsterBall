@@ -15,6 +15,7 @@ public class ReelSpinController : MonoBehaviour
     public int DisplayOffset = 1;
 
     public float DefaultSpinSpeed = 10f;
+    public float[] DefaultSpinStopTimes = new float[3] { 1f, 1.5f, 2f };
 
     public int SymbolHeight = 360;
     public float ReelWidth = 5f;
@@ -31,7 +32,7 @@ public class ReelSpinController : MonoBehaviour
     private int[] _NumFinalSymbolsFilled = new int[3] { 0, 0, 0 };
     private ReelSymbol[] _PaylineSymbols = new ReelSymbol[3];
 
-    private float _CurrentSpinSpeed;
+    private float[] _CurrentSpinSpeed = new float[3] { 10f, 10f, 10f };
 
     private void Awake()
     {
@@ -47,7 +48,6 @@ public class ReelSpinController : MonoBehaviour
         ReelStopped += OnReelStopped;
     }
 
-    float[] _SpinStopTimes = new float[3] { 1f, 1.5f, 2f };
 
     void Update()
     {
@@ -63,7 +63,7 @@ public class ReelSpinController : MonoBehaviour
             GameObject reelPrefab = Instantiate(ReelPrefab, transform);
             Reels[r] = reelPrefab.GetComponent<Reel>();
             Reels[r].SpinTimer = 0f;
-            Reels[r].StopTime = _SpinStopTimes[r];
+            Reels[r].StopTime = DefaultSpinStopTimes[r];
             Reels[r].BounceAmount = .5f;
 
             reelPrefab.transform.position = new Vector3(-ReelWidth + (ReelWidth * r), 0f, 0f);
@@ -100,13 +100,13 @@ public class ReelSpinController : MonoBehaviour
         if(!Spinning)
         {
             Spinning = true;
-            _CurrentSpinSpeed = DefaultSpinSpeed;
             SoundConfig.Instance.PlayReelSpin();
 
             for (int r = 0; r < Reels.Length; r++)
             {
                 _PaylineSymbols[r] = null;
                 _NumFinalSymbolsFilled[r] = 0;
+                _CurrentSpinSpeed[r] = DefaultSpinSpeed;
                 Reels[r].State = ReelStates.Spinning;
                 Reels[r].SpinTimer = 0f;
             }
@@ -115,7 +115,6 @@ public class ReelSpinController : MonoBehaviour
 
     private void StopAllReels()
     {
-        //_CurrentSpinSpeed = DefaultSpinSpeed * 1.5f;
         for (int r = 0; r < Reels.Length; r++)
         {
             Reels[r].State = ReelStates.Stopping;
@@ -163,7 +162,7 @@ public class ReelSpinController : MonoBehaviour
                 else if (reel.State == ReelStates.Bouncing)
                 {
                     float speedMult = .75f;
-                    if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y + (_CurrentSpinSpeed * Time.deltaTime * speedMult) >= reel.transform.position.y))
+                    if (_PaylineSymbols[r] != null && (_PaylineSymbols[r].Position.y + (_CurrentSpinSpeed[r] * Time.deltaTime * speedMult) >= reel.transform.position.y))
                     {
                         SnapReelSymbols(r);
                         //MoveReelSymbols(r, false, true);
@@ -178,17 +177,17 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
-    private void MoveReelSymbols(int reelNumber, bool down, float speedMultiplier = 1f)
+    private void MoveReelSymbols(int r, bool down, float speedMultiplier = 1f)
     {
-        Reel reel = Reels[reelNumber];
+        Reel reel = Reels[r];
 
         for (int s = 0; s < reel.Symbols.Count; s++)
         {
-            reel.Symbols[s].Position.y += (_CurrentSpinSpeed * Time.deltaTime * speedMultiplier) * (down ? -1f : 1f);
+            reel.Symbols[s].Position.y += (_CurrentSpinSpeed[r] * Time.deltaTime * speedMultiplier) * (down ? -1f : 1f);
 
             if (reel.Symbols[s].Position.y <= -SymbolHeight * 3f / 100f)
             {
-                ResetSymbolPosition(reelNumber, s);
+                ResetSymbolPosition(r, s);
             }
 
             reel.Symbols[s].Transform.position = reel.Symbols[s].Position;
@@ -213,6 +212,15 @@ public class ReelSpinController : MonoBehaviour
         Reel reel = Reels[r];
         reel.State = ReelStates.Idle;
         SoundConfig.Instance.ReelStopped(r);
+
+        if(Reels[0].State == ReelStates.Idle && r == 1) 
+        {
+            if (Central.GlobalData.GameData.ReelsResult[0][1] == 0 && Central.GlobalData.GameData.ReelsResult[1][1] == 0)
+            {
+                _CurrentSpinSpeed[2] *= 1.2f;
+                Reels[2].StopTime += 3f;
+            }
+        }
 
         for (int i = 0; i < Reels.Length; i++)
         {
