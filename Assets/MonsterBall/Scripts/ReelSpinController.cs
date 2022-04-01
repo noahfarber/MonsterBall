@@ -109,6 +109,7 @@ public class ReelSpinController : MonoBehaviour
                 _CurrentSpinSpeed[r] = DefaultSpinSpeed;
                 Reels[r].State = ReelStates.Spinning;
                 Reels[r].SpinTimer = 0f;
+                Reels[r].StopTime = DefaultSpinStopTimes[r];
             }
         }
     }
@@ -207,6 +208,7 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
+    public ParticleSystem Anticipation;
     private void OnReelStopped(int r)
     {
         Reel reel = Reels[r];
@@ -219,6 +221,7 @@ public class ReelSpinController : MonoBehaviour
             {
                 _CurrentSpinSpeed[2] *= 1.2f;
                 Reels[2].StopTime += 3f;
+                Anticipation.Play();
             }
         }
 
@@ -230,6 +233,7 @@ public class ReelSpinController : MonoBehaviour
             }
         }
 
+        Anticipation.Stop();
         SoundConfig.Instance.StopReelSpin();
         Spinning = false;
     }
