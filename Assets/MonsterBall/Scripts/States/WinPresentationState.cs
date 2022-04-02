@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework;
+using DG.Tweening;
 
 public class WinPresentationState : State
 {
@@ -57,10 +58,17 @@ public class WinPresentationState : State
                 SymbolData winSymbolData = Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID);
                 if (symbols[i] == winSymbolData.SymbolID || winSymbolData.Type == SymbolType.MixedBar || checkSymbolData.Type == SymbolType.Wild)
                 {
+                    string winAnimName = checkSymbolData.Name;
+                    if(checkSymbolData.Type == SymbolType.Wild)
+                    {
+                        winAnimName = winSymbolData.Name;
+                    }
+
                     ReelParticles[i].Play();
-                    WinBackgrounds[i].Play(checkSymbolData.Name);
+                    WinBackgrounds[i].Play(winAnimName);
                     SpriteRenderer winBackgroundSR = WinBackgrounds[i].GetComponent<SpriteRenderer>();
-                    //winBackgroundSR.color = Math.Instance.GetSymbolDataByID(symbols[i]).AssociatedColor;
+                    winBackgroundSR.color = Color.clear;
+                    winBackgroundSR.DOColor(Color.white, .5f);
                 }
             }
         }
@@ -97,6 +105,8 @@ public class WinPresentationState : State
         for (int i = 0; i < WinBackgrounds.Length; i++)
         {
             WinBackgrounds[i].Play("Idle");
+            WinBackgrounds[i].GetComponent<SpriteRenderer>().color = Color.clear;
+            WinBackgrounds[i].GetComponent<SpriteRenderer>().DOKill();
         }
     }
 }
