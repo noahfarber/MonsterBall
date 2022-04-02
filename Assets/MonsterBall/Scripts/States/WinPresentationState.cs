@@ -53,12 +53,14 @@ public class WinPresentationState : State
 
             for (int i = 0; i < symbols.Length; i++)
             {
-                if(symbols[i] == Central.GlobalData.GameData.WinDetail.SymbolID || Math.Instance.GetSymbolDataByID(symbols[i]).Type == SymbolType.Wild 
-                    || Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID).Type == SymbolType.MixedBar)
+                SymbolData checkSymbolData = Math.Instance.GetSymbolDataByID(symbols[i]);
+                SymbolData winSymbolData = Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID);
+                if (symbols[i] == winSymbolData.SymbolID || winSymbolData.Type == SymbolType.MixedBar || checkSymbolData.Type == SymbolType.Wild)
                 {
                     ReelParticles[i].Play();
-                    WinBackgrounds[i].Play("Play");
-                    WinBackgrounds[i].GetComponent<SpriteRenderer>().color = Math.Instance.GetSymbolDataByID(symbols[i]).AssociatedColor;
+                    WinBackgrounds[i].Play(checkSymbolData.Name);
+                    SpriteRenderer winBackgroundSR = WinBackgrounds[i].GetComponent<SpriteRenderer>();
+                    //winBackgroundSR.color = Math.Instance.GetSymbolDataByID(symbols[i]).AssociatedColor;
                 }
             }
         }
