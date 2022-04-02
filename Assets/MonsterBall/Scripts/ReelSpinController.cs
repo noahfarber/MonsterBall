@@ -89,7 +89,7 @@ public class ReelSpinController : MonoBehaviour
 
     public void RequestStop()
     {
-        if (AllReelsSpinning())
+        if (AllReelsSpinning() && !IsAnticipationSpin())
         {
             StopAllReels();
         }
@@ -209,6 +209,7 @@ public class ReelSpinController : MonoBehaviour
     }
 
     public ParticleSystem Anticipation;
+    private List<int> AnticipatableSymbols = new List<int>(5) { 5, 6, 7, 8, 10 };
     private void OnReelStopped(int r)
     {
         Reel reel = Reels[r];
@@ -217,7 +218,8 @@ public class ReelSpinController : MonoBehaviour
 
         if(Reels[0].State == ReelStates.Idle && r == 1) 
         {
-            if (Central.GlobalData.GameData.ReelsResult[0][1] == 0 && Central.GlobalData.GameData.ReelsResult[1][1] == 0)
+
+            if (IsAnticipationSpin())
             {
                 _CurrentSpinSpeed[2] *= 1.2f;
                 Reels[2].StopTime += 3f;
@@ -236,6 +238,24 @@ public class ReelSpinController : MonoBehaviour
         Anticipation.Stop();
         SoundConfig.Instance.StopReelSpin();
         Spinning = false;
+    }
+
+    private bool IsAnticipationSpin()
+    {
+        bool rtn = false;
+
+        for (int s = 0; s < AnticipatableSymbols.Count; s++)
+        {
+            if (Central.GlobalData.GameData.ReelsResult[0][1] == AnticipatableSymbols[s] || Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.ReelsResult[0][1]).Type == SymbolType.Wild)
+            {
+                if (Central.GlobalData.GameData.ReelsResult[1][1] == AnticipatableSymbols[s] || Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.ReelsResult[1][1]).Type == SymbolType.Wild)
+                {
+                    rtn = true;
+                }
+            }
+        }
+
+        return rtn;
     }
 
     private void ResetSymbolPosition(int r, int s)
