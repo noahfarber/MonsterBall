@@ -7,20 +7,20 @@ using DG.Tweening;
 public class PickGameRecap : State
 {
     [SerializeField] private PickGameState PickState;
-
-    private bool ReadyToExit = false;
+    [SerializeField] private PickGameView View;
+    private bool OutroDone = false;
 
     public override void OnStateEnter()
     {
-        ReadyToExit = false;
-        PickState.PickGameView.transform.DOScaleX(0f, 1f).SetEase(Ease.InOutBounce).OnComplete(ViewSet);
+        OutroDone = false;
+        View.BlackFilter.DOColor(Color.black, .75f).SetEase(Ease.InOutCubic).OnComplete(BlackFilterEnabled);
     }
 
     public override State OnUpdate()
     {
         State rtn = null;
 
-        if(ReadyToExit)
+        if(OutroDone)
         {
             PickState.GameComplete();
         }
@@ -33,8 +33,15 @@ public class PickGameRecap : State
 
     }
 
-    private void ViewSet()
+    private void BlackFilterEnabled()
     {
-        ReadyToExit = true;
+        View.Toggle(false);
+        View.BlackFilter.DOKill();
+        View.BlackFilter.DOColor(Color.clear, 1.5f).SetEase(Ease.OutCubic).OnComplete(BlackFilterDisabled);
+    }
+
+    private void BlackFilterDisabled()
+    {
+        OutroDone = true;
     }
 }
