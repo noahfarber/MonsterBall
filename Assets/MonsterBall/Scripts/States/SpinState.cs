@@ -6,6 +6,7 @@ using Framework;
 public class SpinState : State
 {
     public ReelSpinController ReelsController;
+    [SerializeField] private State PickGameState;
     [SerializeField] private State WinPresentationState;
     private bool _PlayButtonPressed = false;
     private int[] _DemoSymbols;
@@ -24,12 +25,20 @@ public class SpinState : State
         {
             ReelsController.RequestStop();
             _PlayButtonPressed = false;
-        }  
+        }
 
         // Transition check
-        if(ReelsController.Spinning == false)
+        if (ReelsController.Spinning == false)
         {
             rtn = WinPresentationState;
+
+            if (Central.GlobalData.GameData.WinDetail.SymbolID != -1)
+            {
+                if (Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID).Type == SymbolType.Bonus)
+                {
+                    rtn = PickGameState;
+                }
+            }
         }
 
         return rtn;

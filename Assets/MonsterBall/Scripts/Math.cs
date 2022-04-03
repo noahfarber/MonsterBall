@@ -39,7 +39,8 @@ public class Math : MonoBehaviour
 
         if (spinData.spinAward < spinData.totalAward)
         {
-            Debugger.Instance.LogError("Missed a bonus award"); // Add code for bonus awards
+            demoSymbols = new int[3] { 10, 10, 10 };
+            //Debugger.Instance.LogError("Natural Bonus"); // Add code for bonus awards
         }
 
         Central.GlobalData.GameData.CurrentSpin = spinData;
@@ -54,6 +55,12 @@ public class Math : MonoBehaviour
         else
         {
             Central.MathGenerator.Outcome = null;
+
+            if(demoSymbols[0] == 10)
+            {
+                outcome = Central.MathGenerator.RequestFilteredOutcome("bonus");
+            }
+
             GenerateReelsEndPosition(demoSymbols);
         }
 

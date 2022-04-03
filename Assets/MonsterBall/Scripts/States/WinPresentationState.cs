@@ -20,7 +20,7 @@ public class WinPresentationState : State
 
             // Incrementation
             float incrementTime = 0f;
-            int spinWin = Central.GlobalData.GameData.SpinWin * Central.GlobalData.BetMultiplier;
+            int totalWin = Central.GlobalData.GameData.TotalWon * Central.GlobalData.BetMultiplier;
             for (int i = 0; i < WinConfig.SoundConfig.Length; i++)
             {
                 if(((float)Central.GlobalData.GameData.WinDetail.Pay / 5f) < WinConfig.SoundConfig[i].MaxBetMultiple)
@@ -35,8 +35,8 @@ public class WinPresentationState : State
                 }
             }
 
-            IncrementerManager.Instance.WinMeter.Increment(spinWin, incrementTime);
-            IncrementerManager.Instance.CreditMeter.Increment(Central.GlobalData.Money + spinWin, incrementTime, Central.GlobalData.Money);
+            IncrementerManager.Instance.WinMeter.Increment(totalWin, incrementTime);
+            IncrementerManager.Instance.CreditMeter.Increment(Central.GlobalData.Money + totalWin, incrementTime, Central.GlobalData.Money);
             //Debug.LogError("Incrementing at " + incrementTime + " seconds");
 
 
@@ -48,28 +48,31 @@ public class WinPresentationState : State
 
             SoundManager.Instance.PlayAndFade(WinSource, 1f, .2f, 0f);
 
+            HighlightWinBackgrounds();
+        }
+    }
 
-            // Particles
-            int[] symbols = new int[3] { Central.GlobalData.GameData.ReelsResult[0][1], Central.GlobalData.GameData.ReelsResult[1][1], Central.GlobalData.GameData.ReelsResult[2][1] };
-
-            for (int i = 0; i < symbols.Length; i++)
+    public void HighlightWinBackgrounds()
+    {
+        int[] symbols = new int[3] { Central.GlobalData.GameData.ReelsResult[0][1], Central.GlobalData.GameData.ReelsResult[1][1], Central.GlobalData.GameData.ReelsResult[2][1] };
+        
+        for (int i = 0; i < symbols.Length; i++)
+        {
+            SymbolData checkSymbolData = Math.Instance.GetSymbolDataByID(symbols[i]);
+            SymbolData winSymbolData = Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID);
+            if (symbols[i] == winSymbolData.SymbolID || winSymbolData.Type == SymbolType.MixedBar || checkSymbolData.Type == SymbolType.Wild)
             {
-                SymbolData checkSymbolData = Math.Instance.GetSymbolDataByID(symbols[i]);
-                SymbolData winSymbolData = Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID);
-                if (symbols[i] == winSymbolData.SymbolID || winSymbolData.Type == SymbolType.MixedBar || checkSymbolData.Type == SymbolType.Wild)
+                string winAnimName = checkSymbolData.Name;
+                if (checkSymbolData.Type == SymbolType.Wild)
                 {
-                    string winAnimName = checkSymbolData.Name;
-                    if(checkSymbolData.Type == SymbolType.Wild)
-                    {
-                        winAnimName = winSymbolData.Name;
-                    }
-
-                    ReelParticles[i].Play();
-                    WinBackgrounds[i].Play(winAnimName);
-                    SpriteRenderer winBackgroundSR = WinBackgrounds[i].GetComponent<SpriteRenderer>();
-                    winBackgroundSR.color = Color.clear;
-                    winBackgroundSR.DOColor(Color.white, .5f);
+                    winAnimName = winSymbolData.Name;
                 }
+
+                ReelParticles[i].Play();
+                WinBackgrounds[i].Play(winAnimName);
+                SpriteRenderer winBackgroundSR = WinBackgrounds[i].GetComponent<SpriteRenderer>();
+                winBackgroundSR.color = Color.clear;
+                winBackgroundSR.DOColor(Color.white, .5f);
             }
         }
     }

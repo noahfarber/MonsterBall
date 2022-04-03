@@ -27,6 +27,13 @@ public class bzMathGenerator : MonoBehaviour
         return Outcome;
     }
 
+    public DazzleOutcome RequestFilteredOutcome(string filter)
+    {
+        Outcome = BucketManager.PickFilteredOutcome(filter) as DazzleOutcome;
+        Debugger.Instance.Log(Outcome.ToString());
+        return Outcome;
+    }
+
     void LoadJsonData()
     {
         var weightText = Resources.Load<TextAsset>("dh_weights");
