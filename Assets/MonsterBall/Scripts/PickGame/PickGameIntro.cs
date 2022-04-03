@@ -9,6 +9,9 @@ public class PickGameIntro : State
     [SerializeField] private PickGameState _PickGameState;
     [SerializeField] private State _PickingState;
 
+    public SpriteRenderer BlackFilter;
+    public GameObject PickBackground;
+    public GameObject PickTiles;
     private bool IntroDone = false;
 
     public override void OnStateEnter()
