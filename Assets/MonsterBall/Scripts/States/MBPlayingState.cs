@@ -8,36 +8,34 @@ namespace Framework
     {
         public System.Action PlayButtonPressed;
 
+        [SerializeField] private GameObject _Game;
+        [SerializeField] private GameObject _GameUI;
+        [SerializeField] private GameObject _Reels;
         [SerializeField] private int BaseBet = 5;
         [SerializeField] private int[] BetMultipliers;
 
-        [SerializeField] private GameObject _Game;
 
         [SerializeField] private IdleState _IdleState;
         [SerializeField] private SpinState _SpinState;
-
-        [Header("Transition States")]
-        [SerializeField] private State _Paused;
-        private State _StateBeforePause;
+        private SoundConfig _SoundConfig;
 
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            _Game.SetActive(true);
+            ToggleGame();
             AddCallbacks();
-            SoundConfig.Instance.PlayRandomBackgroundClip();
         }
 
         public override State OnUpdate()
         {
             State rtn = null;
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (!_SoundConfig.BackgroundMusic.isPlaying)
             {
-                PauseGame();
+                _SoundConfig.PlayNextBackgroundClip();
             }
 
-            if(Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 PressPlayButton();
             }
@@ -50,23 +48,8 @@ namespace Framework
         public override void OnStateExit()
         {
             base.OnStateExit();
-            _Game.SetActive(false);
+            ToggleGame(false);
             RemoveCallbacks();
-            SoundManager.Instance.Stop(SoundConfig.Instance.BackgroundMusic);
-        }
-
-        public void PauseGame()
-        {
-            if (CurrentState != _Paused)
-            {
-                _StateBeforePause = CurrentState;
-                StateChange(_Paused);
-            }
-            else if (CurrentState == _Paused)
-            {
-                if (_StateBeforePause != null) { StateChange(_StateBeforePause); }
-                else { Debugger.Instance.LogError("Can't unpause... No previous state found."); }
-            }
         }
 
         public void PressPlayButton()
@@ -78,7 +61,7 @@ namespace Framework
         {
             for (int i = 0; i < BetMultipliers.Length; i++)
             {
-                if(Central.GlobalData.BetMultiplier == BetMultipliers[i])
+                if (Central.GlobalData.BetMultiplier == BetMultipliers[i])
                 {
                     Central.GlobalData.BetMultiplier.Value = BetMultipliers[(i + 1) % BetMultipliers.Length];
                     Central.GlobalData.BetAmount.Value = BaseBet * Central.GlobalData.BetMultiplier.Value;
@@ -89,12 +72,24 @@ namespace Framework
             Debugger.Instance.LogError("Couldn't find bet in bet list.");
         }
 
+        private void ToggleGame(bool enabled = true)
+        {
+            _Game.SetActive(enabled);
+            _GameUI.SetActive(enabled);
+            _Reels.SetActive(enabled);
+        }
+
         private void AddCallbacks()
         {
             PlayButtonPressed += _IdleState.PlayButtonPressed;
             PlayButtonPressed += _SpinState.PlayButtonPressed;
             PlayButtonPressed += IncrementerManager.Instance.WinMeter.OnPlayButtonPressed;
             PlayButtonPressed += IncrementerManager.Instance.CreditMeter.OnPlayButtonPressed;
+
+            if(_SoundConfig == null)
+            {
+                _SoundConfig = SoundConfig.Instance;
+            }
         }
 
         private void RemoveCallbacks()

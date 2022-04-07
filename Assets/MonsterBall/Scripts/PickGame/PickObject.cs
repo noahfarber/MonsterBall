@@ -33,7 +33,7 @@ public class PickObject : MonoBehaviour
 
     public void Clicked(int value)
     {
-        ValueText.text = value.ToString();
+        ValueText.text = value == -1 ? "X" : value.ToString();
         OpenParticle.Play();
         Open = true;
         GetComponent<Button>().enabled = false;

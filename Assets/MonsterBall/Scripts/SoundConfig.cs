@@ -26,18 +26,16 @@ public class SoundConfig : MonoBehaviour
 
     private void Update()
     {
-        if(!BackgroundMusic.isPlaying)
-        {
-            PlayNextBackgroundClip();
-        }
+        
     }
 
+    // Deprecated
     public void PlayRandomBackgroundClip()
     {
         ClipIndex = Random.Range(0, BackgroundClips.Length);
 
         BackgroundMusic.clip = BackgroundClips[ClipIndex];
-        SoundManager.Instance.PlayAndFade(BackgroundMusic, 1f, 1f, 0f);
+        SoundManager.Instance.PlayAndFade(BackgroundMusic, .75f, 1f, 0f);
     }
 
     public void PlayNextBackgroundClip()
@@ -50,7 +48,12 @@ public class SoundConfig : MonoBehaviour
         }
 
         BackgroundMusic.clip = BackgroundClips[ClipIndex];
-        SoundManager.Instance.PlayAndFade(BackgroundMusic, 1f, 1f, 0f);
+        SoundManager.Instance.PlayAndFade(BackgroundMusic, .75f, 1f, 0f);
+    }
+
+    public void FadeBackgroundMusic(float targetVolume, float duration, float startVolume = -1)
+    { 
+        SoundManager.Instance.PlayAndFade(BackgroundMusic, targetVolume, duration, startVolume);
     }
 
     public void PlayReelSpin()

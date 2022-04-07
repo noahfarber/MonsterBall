@@ -7,7 +7,6 @@ using DG.Tweening;
 public class WinPresentationState : State
 {
     [SerializeField] private State EndGameState;
-    [SerializeField] private ParticleSystem[] ReelParticles;
     [SerializeField] private Animator[] WinBackgrounds;
     [SerializeField] private WinDurationConfig WinConfig;
     [SerializeField] private AudioSource WinSource;
@@ -68,7 +67,6 @@ public class WinPresentationState : State
                     winAnimName = winSymbolData.Name;
                 }
 
-                ReelParticles[i].Play();
                 WinBackgrounds[i].Play(winAnimName);
                 SpriteRenderer winBackgroundSR = WinBackgrounds[i].GetComponent<SpriteRenderer>();
                 winBackgroundSR.color = Color.clear;
@@ -82,9 +80,10 @@ public class WinPresentationState : State
         State rtn = null;
         if(!IncrementerManager.Instance.Incrementing())
         {
-            if(SoundConfig.Instance.BackgroundMusic.volume != 1f)
+            // Fix this to start on inc finish
+            if(SoundConfig.Instance.BackgroundMusic.volume != .75f)
             {
-                SoundManager.Instance.Fade(SoundConfig.Instance.BackgroundMusic, 1f, 1f);
+                SoundManager.Instance.Fade(SoundConfig.Instance.BackgroundMusic, .75f, 1f);
             }
 
             rtn = EndGameState;
@@ -100,11 +99,6 @@ public class WinPresentationState : State
 
     public void StopSymbolAnimations()
     {
-        for (int i = 0; i < ReelParticles.Length; i++)
-        {
-            ReelParticles[i].Stop();
-            ReelParticles[i].Clear();
-        }
         for (int i = 0; i < WinBackgrounds.Length; i++)
         {
             WinBackgrounds[i].Play("Idle");

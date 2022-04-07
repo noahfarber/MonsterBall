@@ -12,6 +12,11 @@ public class PickGameView : MonoBehaviour
     public GameObject BonusWinText;
     public ParticleSystem BonusWinParticle;
 
+    private void Start()
+    {
+        Toggle(false);
+    }
+
     public void Toggle(bool enabled)
     {
         PickReelsBackground.SetActive(enabled);

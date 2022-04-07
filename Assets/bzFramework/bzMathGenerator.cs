@@ -9,6 +9,7 @@ using Framework;
 
 public class bzMathGenerator : MonoBehaviour
 {
+    [SerializeField] bool LoadMath = true; 
     public DazzleOutcome Outcome;
     public static BZStandardRNG RNG = new BZStandardRNG();
     public static BZMathWeightTable WeightTable = new BZMathWeightTable(RNG);
@@ -16,8 +17,11 @@ public class bzMathGenerator : MonoBehaviour
     
     private void Awake()
     {
-        LoadJsonData();
-        BuildBuckets();
+        if(LoadMath)
+        {
+            LoadJsonData();
+            BuildBuckets();
+        }
     }
 
     public DazzleOutcome RequestOutcome()

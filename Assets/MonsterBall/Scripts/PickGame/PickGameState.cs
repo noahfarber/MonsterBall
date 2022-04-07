@@ -21,6 +21,7 @@ namespace Framework
             _WinPresentationState.HighlightWinBackgrounds();
             ClearTexts();
             AssignValuesToScript();
+            PickGameView.gameObject.SetActive(true);
             ReadyToExit = false;
         }
 
@@ -41,8 +42,9 @@ namespace Framework
         public override void OnStateExit()
         {
             base.OnStateExit();
+            PickGameView.gameObject.SetActive(false);
         }
-        
+
         public void GameComplete()
         {
             ReadyToExit = true;
