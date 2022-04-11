@@ -67,7 +67,7 @@ public class WinPresentationState : State
                     winAnimName = winSymbolData.Name;
                 }
 
-                WinBackgrounds[i].Play(winAnimName);
+                //WinBackgrounds[i].Play(winAnimName);
                 SpriteRenderer winBackgroundSR = WinBackgrounds[i].GetComponent<SpriteRenderer>();
                 winBackgroundSR.color = Color.clear;
                 winBackgroundSR.DOColor(Color.white, .5f);
@@ -99,11 +99,11 @@ public class WinPresentationState : State
 
     public void StopSymbolAnimations()
     {
-        for (int i = 0; i < WinBackgrounds.Length; i++)
+        /*for (int i = 0; i < WinBackgrounds.Length; i++)
         {
             WinBackgrounds[i].Play("Idle");
             WinBackgrounds[i].GetComponent<SpriteRenderer>().color = Color.clear;
             WinBackgrounds[i].GetComponent<SpriteRenderer>().DOKill();
-        }
+        }*/
     }
 }

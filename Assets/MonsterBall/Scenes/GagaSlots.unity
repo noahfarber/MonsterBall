@@ -33552,7 +33552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88486a6740809c44283bee766cdd4442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LoadMath: 1
+  LoadMath: 0
 --- !u!114 &562669832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99533,15 +99533,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2055546044313971667, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
       propertyPath: m_Size.x
-      value: 4.3
+      value: 4.22
       objectReference: {fileID: 0}
     - target: {fileID: 2055546044313971667, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
       propertyPath: m_Size.y
-      value: 7
+      value: 6.93
       objectReference: {fileID: 0}
     - target: {fileID: 2055546044313971667, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a73db56ea91ace748b6480748b621ea3, type: 3}
+    - target: {fileID: 2055546044313971667, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2055546044920624099, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
       propertyPath: m_LocalScale.x
@@ -99569,24 +99573,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
---- !u!95 &1180963372 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2055546046034081025, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
-  m_PrefabInstance: {fileID: 1180963371}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1180963373 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2055546044259110804, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
-  m_PrefabInstance: {fileID: 1180963371}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1180963374 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2055546044920624100, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
-  m_PrefabInstance: {fileID: 1180963371}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1180963375 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2055546044313971666, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
   m_PrefabInstance: {fileID: 1180963371}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1183211530
@@ -137105,6 +137094,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1712267410}
   m_CullTransparentMesh: 1
+--- !u!1 &1772574563 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2055546044313971664, guid: f52a08e27f541f44a9eb3d39e905b0c0, type: 3}
+  m_PrefabInstance: {fileID: 1180963371}
+  m_PrefabAsset: {fileID: 0}
+--- !u!328 &1772574566
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772574563}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 4774b16bda5e69c47ad74ccd58cf9564, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: _MainTex
+  m_RenderMode: 3
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 0
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
+  m_Url: 
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1 &1781762302
 GameObject:
   m_ObjectHideFlags: 0
@@ -147142,9 +147171,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EndGameState: {fileID: 1852998580}
   WinBackgrounds:
-  - {fileID: 1180963375}
-  - {fileID: 1180963374}
-  - {fileID: 1180963372}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   WinConfig: {fileID: 1338427684}
   WinSource: {fileID: 1832331071}
 --- !u!82 &1832331071
