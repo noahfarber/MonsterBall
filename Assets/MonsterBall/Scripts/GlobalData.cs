@@ -39,7 +39,7 @@ public class GlobalData : MonoBehaviour
 
     public void Load()
     {
-        Debug.LogError("Loading Money: " + PlayerPrefs.GetInt("Money", 200));
+        //Debug.LogError("Loading Money: " + PlayerPrefs.GetInt("Money", 200));
         _Money.Value = PlayerPrefs.GetInt("Money", 200);
         _BetMultiplier.Value = PlayerPrefs.GetInt("BetMultiplier", 1);
         _BetAmount.Value = PlayerPrefs.GetInt("BetAmount", 5);
