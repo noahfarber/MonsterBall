@@ -345,9 +345,9 @@ public struct PayData
 [System.Serializable]
 public enum PayModes
 {
-    Line,
-    Scattered,
-    None
+    Line = 0,
+    Scattered = 1,
+    None = 999
 }
 
 [System.Serializable]
