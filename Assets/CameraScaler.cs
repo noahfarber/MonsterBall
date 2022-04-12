@@ -26,7 +26,8 @@ public class CameraScaler : MonoBehaviour
         }
 
         float width = Screen.width >= Screen.height ? Screen.width : Screen.height;
-        _Camera.orthographicSize = (width / _SmallestScreenWidth) * _OriginalOrthoSize;
+        float ortho = Mathf.Clamp((width / _SmallestScreenWidth) * _OriginalOrthoSize, 6f, 18f);
+        _Camera.orthographicSize = ortho;
         Debug.Log("Setting ortho size (" + _Camera.orthographicSize + ") Found Width: " + width + "    Screen Width: " + Screen.width + "  Screen Height: " + Screen.height);
     }
 
