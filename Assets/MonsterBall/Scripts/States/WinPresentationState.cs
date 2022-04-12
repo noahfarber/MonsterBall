@@ -67,10 +67,10 @@ public class WinPresentationState : State
                     winAnimName = winSymbolData.Name;
                 }
 
-                //WinBackgrounds[i].Play(winAnimName);
+                WinBackgrounds[i].Play(winAnimName);
                 SpriteRenderer winBackgroundSR = WinBackgrounds[i].GetComponent<SpriteRenderer>();
-                winBackgroundSR.color = Color.clear;
-                winBackgroundSR.DOColor(Color.white, .5f);
+                /*winBackgroundSR.color = Color.clear;
+                winBackgroundSR.DOColor(Color.white, .5f);*/
             }
         }
     }
