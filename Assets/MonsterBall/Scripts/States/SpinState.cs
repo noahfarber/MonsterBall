@@ -8,6 +8,7 @@ public class SpinState : State
     public ReelSpinController ReelsController;
     [SerializeField] private State PickGameState;
     [SerializeField] private State WinPresentationState;
+    [SerializeField] private Animator SpinButton;
     private bool _PlayButtonPressed = false;
     private int[] _DemoSymbols;
 
@@ -23,7 +24,11 @@ public class SpinState : State
         
         if(_PlayButtonPressed) // Quick stop requested
         {
-            ReelsController.RequestStop();
+            if(ReelsController.RequestStop())
+            {
+                SpinButton.Play("StopPress");
+            }
+
             _PlayButtonPressed = false;
         }
 

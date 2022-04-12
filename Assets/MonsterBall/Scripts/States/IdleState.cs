@@ -7,10 +7,13 @@ public class IdleState : State
 {
     [SerializeField] private SpinState SpinState;
     [SerializeField] private WinPresentationState WinState;
+    [SerializeField] private Animator SpinButton;
+
     private bool _TryStartGame = false;
     public override void OnStateEnter()
     {
         _TryStartGame = false;
+        SpinButton.Play("Idle");
     }
 
     public override State OnUpdate()
@@ -96,7 +99,8 @@ public class IdleState : State
         WinState.StopSymbolAnimations();
         Math.Instance.GenerateOutcome();
         Central.GlobalData.Money.Value -= Central.GlobalData.BetAmount; // Subtract Money
-
+        SpinButton.Play("Spin");
+        
         return SpinState;
     }
 

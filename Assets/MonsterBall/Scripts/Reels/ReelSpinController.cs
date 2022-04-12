@@ -87,12 +87,17 @@ public class ReelSpinController : MonoBehaviour
         }
     }
 
-    public void RequestStop()
+    public bool RequestStop()
     {
+        bool rtn = false;
+
         if (AllReelsSpinning() && !IsAnticipationSpin())
         {
             StopAllReels();
+            rtn = true;
         }
+
+        return rtn;
     }
     
     public void Spin()
