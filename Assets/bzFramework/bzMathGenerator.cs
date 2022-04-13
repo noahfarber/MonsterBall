@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
 using BZFramework.Math;
-using Newtonsoft;
 using System.Linq;
 using Framework;
 
 public class bzMathGenerator : MonoBehaviour
 {
-    [SerializeField] bool LoadMath = true; 
+    [SerializeField] bool LoadMathOnStart = true; 
     public DazzleOutcome Outcome;
     public static BZStandardRNG RNG = new BZStandardRNG();
     public static BZMathWeightTable WeightTable = new BZMathWeightTable(RNG);
@@ -17,17 +16,28 @@ public class bzMathGenerator : MonoBehaviour
     
     private void Awake()
     {
-        if(LoadMath)
+        if(LoadMathOnStart)
         {
-            LoadJsonData();
-            BuildBuckets();
+            LoadMath();
         }
+    }
+
+    public void LoadMath()
+    {/*
+        LoadJsonData();
+        BuildBuckets();*/
+        StartCoroutine(LoadCoroutine());
     }
 
     public DazzleOutcome RequestOutcome()
     {
         Outcome = BucketManager.PickOutcome() as DazzleOutcome;
-        Debugger.Instance.Log(Outcome.ToString());
+        
+        if(Outcome != null)
+        {
+            Debugger.Instance.Log(Outcome.ToString());
+        }
+
         return Outcome;
     }
 
@@ -38,10 +48,18 @@ public class bzMathGenerator : MonoBehaviour
         return Outcome;
     }
 
-    void LoadJsonData()
+    private IEnumerator LoadCoroutine()
     {
+        Debugger.Instance.Log("PREPARING TO LOAD WEIGHTS");
+        yield return null;
         var weightText = Resources.Load<TextAsset>("dh_weights");
+        yield return null;
+        Debugger.Instance.Log("WEIGHTS LOADED");
+        yield return null;
         var weightJson = JSON.Parse(weightText.ToString());
+        yield return null;
+        Debugger.Instance.Log("WEIGHTS PARSED");
+        yield return null;
 
         foreach (var weight in weightJson)
         {
@@ -49,12 +67,53 @@ public class bzMathGenerator : MonoBehaviour
             int pay = int.Parse(weight.Value["pay"]);
             int hits = int.Parse(weight.Value["hits"]);
 
-            BZMathWeightBase bzWeight = new BZMathWeightBase() { Key = new TestDazzleKey(bonusCode, pay), Weight = hits};
+            BZMathWeightBase bzWeight = new BZMathWeightBase() { Key = new TestDazzleKey(bonusCode, pay), Weight = hits };
 
             WeightTable.AddWeight(bzWeight);
         }
+        yield return null;
 
+        Debugger.Instance.Log("WEIGHTS FINISHED");
+        yield return null;
+
+
+
+
+
+
+        var jsonData = Resources.Load<TextAsset>("dh_buckets");
+        yield return null;
+        Debugger.Instance.Log("BUCKETS LOADED");
+        yield return null;
+        Dictionary<int, Dictionary<int, List<JSONDazzleOutcome>>> buckets = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Dictionary<int, List<JSONDazzleOutcome>>>>(jsonData.ToString());
+        yield return null;
+        Debugger.Instance.Log("BUCKETS DESERIALIZED.. Count: " + buckets.Count);
+        yield return null;
+
+        foreach (int bonusCode in buckets.Keys.ToList())
+        {
+            foreach (int award in buckets[bonusCode].Keys.ToList())
+            {
+                foreach (JSONDazzleOutcome outcome in buckets[bonusCode][award])
+                {
+                    BucketManager.AddOutcome(new DazzleOutcome(outcome));
+                }
+            }
+        }
+        yield return null;
+
+        BucketManager.SetPreFilter("bonus", BucketManager.FilterOC(BonusFilter));
+        BucketManager.SetPreFilter("bonus2x", BucketManager.FilterOC(Bonus2xFilter));
+        BucketManager.SetPreFilter("bonus3x", BucketManager.FilterOC(Bonus3xFilter));
+        BucketManager.SetPreFilter("bonus4x", BucketManager.FilterOC(Bonus4xFilter));
+        BucketManager.SetPreFilter("bonus5x", BucketManager.FilterOC(Bonus5xFilter));
+        BucketManager.SetPreFilter("topAward", BucketManager.FilterOC(TopAwardFilter));
+        BucketManager.SetPreFilter("multiBar", BucketManager.FilterOC(MultiBarFilter));
+        yield return null;
+        Debugger.Instance.Log("BUCKETS FINISHED");
+        yield return null;
     }
+
 
     bool BonusFilter(IBZMathOutcome oc)
     {
@@ -122,7 +181,9 @@ public class bzMathGenerator : MonoBehaviour
     void BuildBuckets()
     {
         var jsonData = Resources.Load<TextAsset>("dh_buckets");
-        Dictionary<int, Dictionary<int, List<JSONDazzleOutcome>>> buckets = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Dictionary<int, List<JSONDazzleOutcome>>>>(jsonData.text);
+        Debugger.Instance.Log("BUCKETS LOADED");
+        Dictionary<int, Dictionary<int, List<JSONDazzleOutcome>>> buckets = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Dictionary<int, List<JSONDazzleOutcome>>>>(jsonData.ToString());
+        Debugger.Instance.Log("BUCKETS DESERIALIZED.. Count: " + buckets.Count);
 
         foreach (int bonusCode in buckets.Keys.ToList())
         {
@@ -142,6 +203,8 @@ public class bzMathGenerator : MonoBehaviour
         BucketManager.SetPreFilter("bonus5x", BucketManager.FilterOC(Bonus5xFilter));
         BucketManager.SetPreFilter("topAward", BucketManager.FilterOC(TopAwardFilter));
         BucketManager.SetPreFilter("multiBar", BucketManager.FilterOC(MultiBarFilter));
+        Debugger.Instance.Log("BUCKETS FINISHED");
+
     }
 
     public float TestWeights()
@@ -201,4 +264,22 @@ public class bzMathGenerator : MonoBehaviour
 
         return rtn;
     }
+}
+
+[System.Serializable]
+public class PlayerInfo
+{
+    public string name;
+    public int lives;
+    public float health;
+
+    public static PlayerInfo CreateFromJSON(string jsonString)
+    {
+        return JsonUtility.FromJson<PlayerInfo>(jsonString);
+    }
+
+    // Given JSON input:
+    // {"name":"Dr Charles","lives":3,"health":0.8}
+    // this example will return a PlayerInfo object with
+    // name == "Dr Charles", lives == 3, and health == 0.8f.
 }

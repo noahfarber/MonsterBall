@@ -22,7 +22,7 @@ namespace Framework
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            ToggleGame();
+            //ToggleGame();
             AddCallbacks();
         }
 
@@ -48,7 +48,7 @@ namespace Framework
         public override void OnStateExit()
         {
             base.OnStateExit();
-            ToggleGame(false);
+            //ToggleGame(false);
             RemoveCallbacks();
         }
 

@@ -81,7 +81,7 @@ public class GlobalData : MonoBehaviour
 
     public void Save()
     {
-        Debug.LogError("Saving Money: " + _Money);
+        //Debug.LogError("Saving Money: " + _Money);
         PlayerPrefs.SetInt("Money", _Money);
         PlayerPrefs.SetInt("BetMultiplier", _BetMultiplier);
         PlayerPrefs.SetInt("BetAmount", _BetAmount);

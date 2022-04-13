@@ -35,18 +35,28 @@ public class Math : MonoBehaviour
     public void GenerateOutcome(int[] demoSymbols = null)
     {
         DazzleOutcome outcome = Central.MathGenerator.RequestOutcome();
-        DazzleSpinData spinData = outcome.GetSpin(0);
+        DazzleSpinData spinData = null;
 
-        if (spinData.spinAward < spinData.totalAward)
+        if (outcome != null)
         {
-            demoSymbols = new int[3] { 10, 10, 10 };
-            //Debugger.Instance.LogError("Natural Bonus"); // Add code for bonus awards
+            spinData = outcome.GetSpin(0);
+        }
+        else
+        {
+            demoSymbols = new int[3] { 0, 0, 0 };
+        }
+
+        if(spinData != null)
+        {
+            if (spinData.spinAward < spinData.totalAward)
+            {
+                demoSymbols = new int[3] { 10, 10, 10 };
+                // Code for natural bonus awards
+            }
         }
 
         Central.GlobalData.GameData.CurrentSpin = spinData;
         Central.GlobalData.GameData.LastOutCome = outcome;
-        /*Central.GlobalData.GameData.SpinWin.Value = spinData.spinAward * Central.GlobalData.BetMultiplier;
-        Central.GlobalData.GameData.TotalWon.Value = outcome.TotalAward * Central.GlobalData.BetMultiplier;*/
 
         if (demoSymbols == null)
         {
@@ -68,21 +78,23 @@ public class Math : MonoBehaviour
 
         Central.GlobalData.GameData.WinDetail = EvaluateWin();
 
-        Central.GlobalData.GameData.TotalWon.Value = outcome.TotalAward;
+        Central.GlobalData.GameData.TotalWon.Value = outcome != null ? outcome.TotalAward : Central.GlobalData.GameData.WinDetail.Pay;
         Central.GlobalData.GameData.SpinWin.Value = Central.GlobalData.GameData.WinDetail.Pay;
 
-
-        if (Central.GlobalData.GameData.WinDetail == null && spinData.totalAward > 0)
+        if(outcome != null)
         {
-            string log = "Couldn't find win detail... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward;
-            log += "  Reels: " + Central.GlobalData.GameData.ReelsResult[0][1] + "," + Central.GlobalData.GameData.ReelsResult[1][1] + "," + Central.GlobalData.GameData.ReelsResult[2][1];
-            Debugger.Instance.LogError(log);
-        }
-        else if(Central.GlobalData.GameData.WinDetail != null)
-        {
-            if(Central.GlobalData.GameData.SpinWin.Value != spinData.spinAward && demoSymbols == null)
+            if (Central.GlobalData.GameData.WinDetail == null && spinData.totalAward > 0)
             {
-                Debugger.Instance.LogError("Wrong pay value " + Central.GlobalData.GameData.SpinWin.Value + " ... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward);
+                string log = "Couldn't find win detail... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward;
+                log += "  Reels: " + Central.GlobalData.GameData.ReelsResult[0][1] + "," + Central.GlobalData.GameData.ReelsResult[1][1] + "," + Central.GlobalData.GameData.ReelsResult[2][1];
+                Debugger.Instance.LogError(log);
+            }
+            else if (Central.GlobalData.GameData.WinDetail != null)
+            {
+                if (Central.GlobalData.GameData.SpinWin.Value != spinData.spinAward && demoSymbols == null)
+                {
+                    Debugger.Instance.LogError("Wrong pay value " + Central.GlobalData.GameData.SpinWin.Value + " ... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward);
+                }
             }
         }
     }
