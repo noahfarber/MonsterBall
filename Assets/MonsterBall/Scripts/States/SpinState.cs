@@ -37,9 +37,9 @@ public class SpinState : State
         {
             rtn = WinPresentationState;
 
-            if (Central.GlobalData.GameData.WinDetail.SymbolID != -1)
+            if (Central.GlobalData.GameData.LastWinDetail.SymbolID != -1)
             {
-                if (Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID).Type == SymbolType.Bonus)
+                if (Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.LastWinDetail.SymbolID).Type == SymbolType.Bonus)
                 {
                     rtn = PickGameState;
                 }

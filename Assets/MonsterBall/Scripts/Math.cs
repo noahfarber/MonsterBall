@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using Framework;
 
 public class Math : MonoBehaviour
@@ -11,6 +12,10 @@ public class Math : MonoBehaviour
     public SymbolData[] SymbolInfo;
     private int ReelCount = 3;
     private int[] _DemoSymbols;
+
+    public int[] Outcome;
+    private Dictionary<string, int[]> ReelWeights = new Dictionary<string, int[]>();
+    private int[] ReelWeightCount = new int[3];
 
     private void Awake()
     {
@@ -23,80 +28,69 @@ public class Math : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Outcome = new int[3];
+        LoadReels();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        LoadReels();
     }
 
-    public void GenerateOutcome(int[] demoSymbols = null)
+
+    public int[] RequestOutcome()
     {
-        DazzleOutcome outcome = Central.MathGenerator.RequestOutcome();
-        DazzleSpinData spinData = null;
-
-        if (outcome != null)
+        for (int r = 0; r < Outcome.Length; r++)
         {
-            spinData = outcome.GetSpin(0);
-        }
-        else
-        {
-            demoSymbols = new int[3] { 0, 0, 0 };
-        }
-
-        if(spinData != null)
-        {
-            if (spinData.spinAward < spinData.totalAward)
+            int pointer = Random.Range(0, ReelWeightCount[r]);
+            int weightCount = 0;
+            foreach (var symbolWeights in ReelWeights)
             {
-                demoSymbols = new int[3] { 10, 10, 10 };
-                // Code for natural bonus awards
+                if (weightCount + symbolWeights.Value[r] <= pointer)
+                {
+                    Outcome[r] = Math.Instance.GetEndPositionFromSymbolName(r, symbolWeights.Key);
+                    break;
+
+                }
+                else
+                {
+                    weightCount += symbolWeights.Value[r];
+                }
             }
         }
 
-        Central.GlobalData.GameData.CurrentSpin = spinData;
-        Central.GlobalData.GameData.LastOutCome = outcome;
+        if (Outcome != null)
+        {
+            Debugger.Instance.Log(Outcome.ToString());
+        }
+        else
+        {
+            Debugger.Instance.LogError("Couldn't get an outcome");
+        }
+
+        return Outcome;
+    }
+    public void GenerateOutcome(int[] demoSymbols = null)
+    {
+        RequestOutcome();
 
         if (demoSymbols == null)
         {
-            GenerateReelsEndPosition(spinData);
+            GenerateReelsEndPosition(Outcome);
         }
         else
         {
-            Central.MathGenerator.Outcome = null;
-
-            if(demoSymbols[0] == 10)
-            {
-                outcome = Central.MathGenerator.RequestFilteredOutcome("bonus");
-            }
+            Outcome = null;
 
             GenerateReelsEndPosition(demoSymbols);
         }
 
         Central.GlobalData.GameData.ReelsResult = GetReelsResult();
 
-        Central.GlobalData.GameData.WinDetail = EvaluateWin();
-
-        Central.GlobalData.GameData.TotalWon.Value = outcome != null ? outcome.TotalAward : Central.GlobalData.GameData.WinDetail.Pay;
-        Central.GlobalData.GameData.SpinWin.Value = Central.GlobalData.GameData.WinDetail.Pay;
-
-        if(outcome != null)
-        {
-            if (Central.GlobalData.GameData.WinDetail == null && spinData.totalAward > 0)
-            {
-                string log = "Couldn't find win detail... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward;
-                log += "  Reels: " + Central.GlobalData.GameData.ReelsResult[0][1] + "," + Central.GlobalData.GameData.ReelsResult[1][1] + "," + Central.GlobalData.GameData.ReelsResult[2][1];
-                Debugger.Instance.LogError(log);
-            }
-            else if (Central.GlobalData.GameData.WinDetail != null)
-            {
-                if (Central.GlobalData.GameData.SpinWin.Value != spinData.spinAward && demoSymbols == null)
-                {
-                    Debugger.Instance.LogError("Wrong pay value " + Central.GlobalData.GameData.SpinWin.Value + " ... Syms: " + spinData.syms + "     Pay: " + spinData.spinAward);
-                }
-            }
-        }
+        WinDetail winDetail = EvaluateWin();
+        Central.GlobalData.GameData.TotalWon.Value = winDetail.Pay;
+        Central.GlobalData.GameData.LastWinDetail = winDetail;
     }
 
     public SymbolData GetSymbolDataByID(int symbol)
@@ -213,12 +207,9 @@ public class Math : MonoBehaviour
         _DemoSymbols = symbols;
     }
 
-    public void GenerateReelsEndPosition(DazzleSpinData outcome)
+    public void GenerateReelsEndPosition(int[] stops)
     {
-        List<int> stops = new List<int>();
-        stops = Central.MathGenerator.StringToIntList(outcome.stops);
-
-        if (stops.Count == ReelsController.ReelsEndPosition.Length)
+        if (stops.Length == ReelsController.ReelsEndPosition.Length)
         {
             for (int i = 0; i < ReelsController.ReelsEndPosition.Length; ++i)
             {
@@ -228,24 +219,6 @@ public class Math : MonoBehaviour
         else
         {
             Debug.LogError("Bz reel stops and slots generation stops have a length mismatch.");
-        }
-    }
-
-    public void GenerateReelsEndPosition(int[] demoSymbols)
-    {
-        if (demoSymbols != null) // If we have a demo spin
-        {
-            if (demoSymbols.Length != ReelsController.ReelsEndPosition.Length)
-            {
-                Debugger.Instance.LogError("Incorrect amount of symbols provided: " + demoSymbols.Length);
-            }
-            else
-            {
-                for (int r = 0; r < ReelCount; r++)
-                {
-                    ReelsController.ReelsEndPosition[r] = GetEndPositionFromSymbol(r, demoSymbols[r]);
-                }
-            }
         }
     }
 
@@ -266,7 +239,7 @@ public class Math : MonoBehaviour
         return result;
     }
 
-    public int GetEndPositionFromSymbol(int r, int symbol)
+    public int GetEndPositionFromSymbolID(int r, int symbol)
     {
         List<int> rtn = new List<int>();
 
@@ -288,6 +261,34 @@ public class Math : MonoBehaviour
         return rtn[Random.Range(0, rtn.Count)];
     }
 
+    public int GetEndPositionFromSymbolName(int r, string symbolName)
+    {
+        List<int> rtn = new List<int>();
+
+        for (int s = 0; s < SymbolInfo.Length; s++)
+        {
+            if(SymbolInfo[s].Name == symbolName)
+            {
+
+            }
+        }
+        for (int s = 0; s < ReelStrips[r].Symbols.Length; s++)
+        {
+            string checkName = GetSymbolDataByID(ReelStrips[r].Symbols[s]).Name;
+
+            if (checkName == symbolName)
+            {
+                rtn.Add(s);
+            }
+        }
+
+        if (rtn.Count == 0)
+        {
+            Debugger.Instance.LogError("Couldn't find symbol: " + symbolName + " on reel strip " + r);
+        }
+
+        return rtn[Random.Range(0, rtn.Count)];
+    }
     public int GetSymbolFromEndPos(int r, int endPos)
     {
         return ReelStrips[r].Symbols[endPos];
@@ -320,6 +321,34 @@ public class Math : MonoBehaviour
     private string GetSymbolName(int reel, int index)
     {
         return SymbolInfo[ReelStrips[reel].Symbols[index]].Name;
+    }
+
+    private void LoadReels()
+    {
+        ReelWeights.Clear();
+        ReelWeights.Add("Blank", new int[3] { 55, 55, 55 });
+        ReelWeights.Add("Cherry", new int[3] { 65, 66, 70 });
+        ReelWeights.Add("Bar1", new int[3] { 180, 190, 180 });
+        ReelWeights.Add("Bar2", new int[3] { 150, 140, 135 });
+        ReelWeights.Add("Bar3", new int[3] { 120, 110, 115 });
+        ReelWeights.Add("Bell", new int[3] { 100, 90, 100 });
+        ReelWeights.Add("Seven", new int[3] { 95, 105, 120 });
+        ReelWeights.Add("Diamond", new int[3] { 65, 75, 85 });
+        ReelWeights.Add("Wild", new int[3] { 60, 60, 60 });
+        ReelWeights.Add("Bonus", new int[3] { 110, 109, 80 });
+
+        string weights = "";
+        for (int r = 0; r < ReelWeightCount.Length; r++)
+        {
+            for (int i = 0; i < ReelWeights.Count; i++)
+            {
+                ReelWeightCount[r] += ReelWeights.ElementAt(i).Value[0];
+            }
+
+            weights += "Reel " + r + " Weight: " + ReelWeightCount[r] + "  ";
+        }
+
+        Debugger.Instance.Log(weights);
     }
 
     private void LogReelsResult()
@@ -368,5 +397,28 @@ public class Math : MonoBehaviour
     private int Modulo(int x, int m)
     {
         return (x % m + m) % m;
+    }
+
+    private List<int> StringToIntList(string str)
+    {
+        List<int> rtn = new List<int>();
+
+        if (!string.IsNullOrEmpty(str))
+        {
+            foreach (var s in str.Split(','))
+            {
+                int num;
+                if (int.TryParse(s, out num))
+                {
+                    rtn.Add(num);
+                }
+                else
+                {
+                    Debug.LogError("Couldn't convert string : " + s);
+                }
+            }
+        }
+
+        return rtn;
     }
 }

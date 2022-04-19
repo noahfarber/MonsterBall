@@ -12,10 +12,7 @@ public class JSONDazzleWeight
 public class JSONDazzleOutcome
 {
     public string stops { get; set; }
-    public string syms { get; set; }
     public int baseAward { get; set; }
-    public int mult { get; set; }
-    public int spinAward { get; set; }
     public int totalAward { get; set; }
     public JSONDazzleOutcome[] spins { get; set; }
 }
@@ -34,10 +31,7 @@ public class TestDazzleKey : BZMathKeyBase
 public class DazzleSpinData
 {
     public string stops { get; set; }
-    public string syms { get; set; }
     public int baseAward { get; set; }
-    public int mult { get; set; }
-    public int spinAward { get; set; }
     public int totalAward { get; set; }
 
     public DazzleSpinData(JSONDazzleOutcome js = null)
@@ -45,19 +39,13 @@ public class DazzleSpinData
         if (js == null)
         {
             stops = "";
-            syms = "";
             baseAward = 0;
-            mult = 1;
-            spinAward = baseAward * mult;
-            totalAward = spinAward;
+            totalAward = 0;
         }
         else
         {
             stops = js.stops;
-            syms = js.syms;
             baseAward = js.baseAward;
-            mult = js.mult;
-            spinAward = js.spinAward;
             totalAward = js.totalAward;
         }
     }
@@ -111,9 +99,9 @@ public class DazzleOutcome : BZMathOutcomeBase
         this.Key = new TestDazzleKey((_spins.Count < 2) ? 0 : _spins.Count, this.TotalAward);
     }
 
-    public string ToString()
+    public override string ToString()
     {
-        string rtn = "Outcome: Award: " + TotalAward + "    Spin Win: " + GetSpin(0).spinAward + "     Stops: " + GetSpin(0).stops + "     Symbols: " + GetSpin(0).syms + "    Total Spins: " + GetSpins().Count;
+        string rtn = "Outcome: Award: " + TotalAward + "    Spin Win: " + GetSpin(0).baseAward + "     Stops: " + GetSpin(0).stops + "    Total Spins: " + GetSpins().Count;
         return rtn;
 
     }

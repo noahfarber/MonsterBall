@@ -13,7 +13,7 @@ public class WinPresentationState : State
 
     public override void OnStateEnter()
     {
-        if(Central.GlobalData.GameData.SpinWin > 0)
+        if(Central.GlobalData.GameData.TotalWon > 0)
         {
             WinSource.clip = null;
 
@@ -22,7 +22,7 @@ public class WinPresentationState : State
             int totalWin = Central.GlobalData.GameData.TotalWon * Central.GlobalData.BetMultiplier;
             for (int i = 0; i < WinConfig.SoundConfig.Length; i++)
             {
-                if(((float)Central.GlobalData.GameData.WinDetail.Pay / 5f) < WinConfig.SoundConfig[i].MaxBetMultiple)
+                if(((float)Central.GlobalData.GameData.LastWinDetail.Pay / 5f) < WinConfig.SoundConfig[i].MaxBetMultiple)
                 {
                     WinSoundDetail detail = WinConfig.SoundConfig[i];
                     incrementTime = detail.Duration;
@@ -58,7 +58,7 @@ public class WinPresentationState : State
         for (int i = 0; i < symbols.Length; i++)
         {
             SymbolData checkSymbolData = Math.Instance.GetSymbolDataByID(symbols[i]);
-            SymbolData winSymbolData = Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.WinDetail.SymbolID);
+            SymbolData winSymbolData = Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.LastWinDetail.SymbolID);
             if (symbols[i] == winSymbolData.SymbolID || winSymbolData.Type == SymbolType.MixedBar || checkSymbolData.Type == SymbolType.Wild)
             {
                 string winAnimName = checkSymbolData.Name;

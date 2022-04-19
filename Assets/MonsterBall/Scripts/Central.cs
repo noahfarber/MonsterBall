@@ -4,17 +4,17 @@ using UnityEngine;
 
 public static class Central
 {
-    static bzMathGenerator _mathGenerator;
-    public static bzMathGenerator MathGenerator
+    static Math _math;
+    public static Math Math
     {
         get
         {
-            if (_mathGenerator == null)
+            if (_math == null)
             {
-                _mathGenerator = Object.FindObjectOfType<bzMathGenerator>();
+                _math = Object.FindObjectOfType<Math>();
             }
 
-            return _mathGenerator;
+            return _math;
         }
     }
 
