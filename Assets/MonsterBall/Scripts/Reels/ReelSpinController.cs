@@ -256,6 +256,15 @@ public class ReelSpinController : MonoBehaviour
                 if (Central.GlobalData.GameData.ReelsResult[1][1] == AnticipatableSymbols[s] || Math.Instance.GetSymbolDataByID(Central.GlobalData.GameData.ReelsResult[1][1]).Type == SymbolType.Wild)
                 {
                     rtn = true;
+
+                    // manually block bonus symbol and wild
+                    if (AnticipatableSymbols[s] == 10)
+                    {
+                        if (Central.GlobalData.GameData.ReelsResult[0][1] != Central.GlobalData.GameData.ReelsResult[1][1])
+                        {
+                            rtn = false;
+                        }
+                    }
                 }
             }
         }

@@ -35,21 +35,23 @@ public class Math : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        LoadReels();
+
     }
 
 
     public int[] RequestOutcome()
     {
+        string outcomeStr = "";
         for (int r = 0; r < Outcome.Length; r++)
         {
             int pointer = Random.Range(0, ReelWeightCount[r]);
             int weightCount = 0;
             foreach (var symbolWeights in ReelWeights)
             {
-                if (weightCount + symbolWeights.Value[r] <= pointer)
+                if (pointer <= weightCount + symbolWeights.Value[r])
                 {
-                    Outcome[r] = Math.Instance.GetEndPositionFromSymbolName(r, symbolWeights.Key);
+                    Outcome[r] = GetEndPositionFromSymbolName(r, symbolWeights.Key);
+                    outcomeStr += Outcome[r] + ", ";
                     break;
 
                 }
@@ -62,7 +64,7 @@ public class Math : MonoBehaviour
 
         if (Outcome != null)
         {
-            Debugger.Instance.Log(Outcome.ToString());
+            Debugger.Instance.Log(outcomeStr);
         }
         else
         {
@@ -91,20 +93,10 @@ public class Math : MonoBehaviour
         WinDetail winDetail = EvaluateWin();
         Central.GlobalData.GameData.TotalWon.Value = winDetail.Pay;
         Central.GlobalData.GameData.LastWinDetail = winDetail;
-    }
 
-    public SymbolData GetSymbolDataByID(int symbol)
-    {
-        for (int s = 0; s < SymbolInfo.Length; s++)
-        {
-            if(SymbolInfo[s].SymbolID == symbol)
-            {
-                return SymbolInfo[s];
-            }
-        }
-
-        Debugger.Instance.LogError("Couldn't find symbol data for symbol: " + symbol);
-        return new SymbolData();
+        LogPayline();
+        LogEndPos();
+        LogReelsResult();
     }
 
     public WinDetail EvaluateWin()
@@ -239,6 +231,20 @@ public class Math : MonoBehaviour
         return result;
     }
 
+    public SymbolData GetSymbolDataByID(int symbol)
+    {
+        for (int s = 0; s < SymbolInfo.Length; s++)
+        {
+            if (SymbolInfo[s].SymbolID == symbol)
+            {
+                return SymbolInfo[s];
+            }
+        }
+
+        Debugger.Instance.LogError("Couldn't find symbol data for symbol: " + symbol);
+        return new SymbolData();
+    }
+
     public int GetEndPositionFromSymbolID(int r, int symbol)
     {
         List<int> rtn = new List<int>();
@@ -289,6 +295,7 @@ public class Math : MonoBehaviour
 
         return rtn[Random.Range(0, rtn.Count)];
     }
+
     public int GetSymbolFromEndPos(int r, int endPos)
     {
         return ReelStrips[r].Symbols[endPos];
@@ -318,9 +325,9 @@ public class Math : MonoBehaviour
         return SymbolInfo[id].Name;
     }
 
-    private string GetSymbolName(int reel, int index)
+    private string GetSymbolNameByEndPos(int reel, int endPos)
     {
-        return SymbolInfo[ReelStrips[reel].Symbols[index]].Name;
+        return SymbolInfo[ReelStrips[reel].Symbols[endPos]].Name;
     }
 
     private void LoadReels()
