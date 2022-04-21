@@ -57,13 +57,13 @@ namespace Framework
             PlayButtonPressed?.Invoke();
         }
 
-        public void RequestBetChange()
+        public void RequestBetChange(int direction)
         {
             for (int i = 0; i < BetMultipliers.Length; i++)
             {
                 if (Central.GlobalData.BetMultiplier == BetMultipliers[i])
                 {
-                    Central.GlobalData.BetMultiplier.Value = BetMultipliers[(i + 1) % BetMultipliers.Length];
+                    Central.GlobalData.BetMultiplier.Value = BetMultipliers[(i + direction + BetMultipliers.Length) % BetMultipliers.Length];
                     Central.GlobalData.BetAmount.Value = BaseBet * Central.GlobalData.BetMultiplier.Value;
                     return;
                 }
