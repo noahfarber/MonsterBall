@@ -32,13 +32,6 @@ public class Math : MonoBehaviour
         LoadReels();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
     public int[] RequestOutcome()
     {
         string outcomeStr = "";
