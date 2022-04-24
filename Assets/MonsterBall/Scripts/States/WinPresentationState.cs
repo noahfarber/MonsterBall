@@ -3,13 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework;
 using DG.Tweening;
+using UnityEngine.Video;
+
+[System.Serializable]
+public class ReelVideos
+{
+    public Dictionary<string, VideoPlayer> Entries = new Dictionary<string, VideoPlayer>();
+    public List<GameObject> VideoList;
+
+    public void CreateVidComponentList()
+    {
+        for (int i = 0; i < VideoList.Count; i++)
+        {
+            if(VideoList[i].GetComponent<VideoPlayer>() != null)
+            {
+                Entries.Add(VideoList[i].name, VideoList[i].GetComponent<VideoPlayer>());
+            }
+        }
+    }
+}
 
 public class WinPresentationState : State
 {
+    public ReelVideos[] ReelVideos;
     [SerializeField] private State EndGameState;
-    [SerializeField] private Animator[] WinBackgrounds;
     [SerializeField] private WinDurationConfig WinConfig;
     [SerializeField] private AudioSource WinSource;
+
+    private void Start()
+    {
+        StopSymbolAnimations();
+        TryCreateVideoEntries();
+    }
 
     public override void OnStateEnter()
     {
@@ -67,7 +92,24 @@ public class WinPresentationState : State
                     winAnimName = winSymbolData.Name;
                 }
 
-                WinBackgrounds[i].Play(winAnimName);
+                if (winAnimName == "Multi-Bar")
+                {
+                    winAnimName = "Wild";
+                }
+
+                VideoPlayer player;
+                ReelVideos RV = ReelVideos[i];
+                RV.Entries.TryGetValue(winAnimName, out player);
+
+                if(player != null)
+                {
+                    player.Play();
+                    player.transform.localScale = Vector3.one;
+                }
+                else
+                {
+                    Debug.LogError("Reel " + i + " couldn't find a win video for symbol: " + winAnimName);
+                }
             }
         }
     }
@@ -96,9 +138,31 @@ public class WinPresentationState : State
 
     public void StopSymbolAnimations()
     {
-        for (int i = 0; i < WinBackgrounds.Length; i++)
+        for (int i = 0; i < ReelVideos.Length; i++)
         {
-            WinBackgrounds[i].Play("Idle");
+            for (int j = 0; j < ReelVideos[i].VideoList.Count; j++)
+            {
+                ReelVideos[i].VideoList[j].transform.localScale = Vector3.zero;
+            }
+
+            foreach (var item in ReelVideos[i].Entries)
+            {
+                item.Value.Pause();
+            }
+        }
+    }
+    
+    private void TryCreateVideoEntries()
+    {
+        for (int i = 0; i < ReelVideos.Length; i++)
+        {
+            ReelVideos RV = ReelVideos[i];
+            if (RV.Entries.Count == 0)
+            {
+                RV.CreateVidComponentList();
+
+                if (RV.Entries.Count == 0) { Debug.LogError("Win background error.. No video entries for reel " + i); }
+            }
         }
     }
 }
