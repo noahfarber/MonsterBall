@@ -34,33 +34,33 @@ public class Math : MonoBehaviour
 
     public int[] RequestOutcome()
     {
-        string outcomeStr = "";
-        for (int r = 0; r < Outcome.Length; r++)
-        {
-            int pointer = Random.Range(0, ReelWeightCount[r]);
-            int weightCount = 0;
-            foreach (var symbolWeights in ReelWeights)
-            {
-                if (pointer <= weightCount + symbolWeights.Value[r])
-                {
-                    Outcome[r] = GetEndPositionFromSymbolName(r, symbolWeights.Key);
-                    outcomeStr += Outcome[r] + ", ";
-                    break;
-
-                }
-                else
-                {
-                    weightCount += symbolWeights.Value[r];
-                }
-            }
-        }
-
         if (Outcome != null)
         {
+            string outcomeStr = "";
+            for (int r = 0; r < Outcome.Length; r++)
+            {
+                int pointer = Random.Range(0, ReelWeightCount[r]);
+                int weightCount = 0;
+                foreach (var symbolWeights in ReelWeights)
+                {
+                    if (pointer <= weightCount + symbolWeights.Value[r])
+                    {
+                        Outcome[r] = GetEndPositionFromSymbolName(r, symbolWeights.Key);
+                        outcomeStr += Outcome[r] + ", ";
+                        break;
+
+                    }
+                    else
+                    {
+                        weightCount += symbolWeights.Value[r];
+                    }
+                }
+            }
             Debugger.Instance.Log(outcomeStr);
         }
         else
         {
+            Outcome = new int[3];
             Debugger.Instance.LogError("Couldn't get an outcome");
         }
 
@@ -68,6 +68,7 @@ public class Math : MonoBehaviour
     }
     public void GenerateOutcome(int[] demoSymbols = null)
     {
+        
         RequestOutcome();
 
         if (demoSymbols == null)
@@ -77,8 +78,13 @@ public class Math : MonoBehaviour
         else
         {
             Outcome = null;
+            int[] demoStops = new int[3];
 
-            GenerateReelsEndPosition(demoSymbols);
+            for (int r = 0; r < demoStops.Length; r++)
+            {
+                demoStops[r] = GetEndPositionFromSymbolID(r, demoSymbols[r]);
+            }
+            GenerateReelsEndPosition(demoStops);
         }
 
         Central.GlobalData.GameData.ReelsResult = GetReelsResult();
@@ -203,7 +209,7 @@ public class Math : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Bz reel stops and slots generation stops have a length mismatch.");
+            Debugger.Instance.LogError("Bz reel stops and slots generation stops have a length mismatch.");
         }
     }
 
