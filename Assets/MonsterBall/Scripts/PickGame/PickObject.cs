@@ -10,7 +10,8 @@ public class PickObject : MonoBehaviour
     public bool Open = false;
     public TextMeshProUGUI ValueText;
     public ParticleSystem PressedParticle;
-    public ParticleSystem OpenLoopParticle;
+    public ParticleSystem GoodLoop;
+    public ParticleSystem BadLoop;
 
 
     // Start is called before the first frame update
@@ -30,19 +31,25 @@ public class PickObject : MonoBehaviour
         ValueText.text = "";
         Open = false;
         GetComponent<Button>().enabled = true;
-        OpenLoopParticle.Stop();
+        GoodLoop.Stop();
+        BadLoop.Stop();
     }
 
     public void Clicked(int value)
     {
-        ValueText.text = value == -1 ? "X" : value.ToString();
-        ValueText.color = value == -1 ? Color.red : new Color(255, 0, 213);
+        bool isBomb = value == -1;
+        ValueText.text = isBomb ? "X" : value.ToString();
         Open = true;
         GetComponent<Button>().enabled = false;
         PressedParticle.Play();
-        OpenLoopParticle.Play();
-        PressedParticle.startColor = value == -1 ? Color.red : Color.white;
-        OpenLoopParticle.startColor = value == -1 ? Color.red : new Color(255, 0, 213);
+        if(isBomb)
+        {
+            GoodLoop.Play();
+        }
+        else
+        {
+            BadLoop.Play();
+        }
     }
 
 }
