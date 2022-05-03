@@ -42,6 +42,7 @@ namespace Framework
         public override void OnStateExit()
         {
             base.OnStateExit();
+            ClearTexts();
             PickGameView.gameObject.SetActive(false);
         }
 

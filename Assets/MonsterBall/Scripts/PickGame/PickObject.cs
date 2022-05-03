@@ -9,8 +9,9 @@ public class PickObject : MonoBehaviour
 {
     public bool Open = false;
     public TextMeshProUGUI ValueText;
-    public ParticleSystem OpenParticle;
-    
+    public ParticleSystem PressedParticle;
+    public ParticleSystem OpenLoopParticle;
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,14 +30,19 @@ public class PickObject : MonoBehaviour
         ValueText.text = "";
         Open = false;
         GetComponent<Button>().enabled = true;
+        OpenLoopParticle.Stop();
     }
 
     public void Clicked(int value)
     {
         ValueText.text = value == -1 ? "X" : value.ToString();
-        OpenParticle.Play();
+        ValueText.color = value == -1 ? Color.red : new Color(255, 0, 213);
         Open = true;
         GetComponent<Button>().enabled = false;
+        PressedParticle.Play();
+        OpenLoopParticle.Play();
+        PressedParticle.startColor = value == -1 ? Color.red : Color.white;
+        OpenLoopParticle.startColor = value == -1 ? Color.red : new Color(255, 0, 213);
     }
 
 }
