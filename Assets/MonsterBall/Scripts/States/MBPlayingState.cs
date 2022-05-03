@@ -35,7 +35,7 @@ namespace Framework
                 _SoundConfig.PlayNextBackgroundClip();
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (InputBehaviorTypes.GetKeyDown(KeyCode.Space))
             {
                 PressPlayButton();
             }

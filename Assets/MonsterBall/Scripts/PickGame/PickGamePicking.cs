@@ -7,12 +7,14 @@ public class PickGamePicking : State
 {
     [SerializeField] private PickGameState _PickGameState;
     [SerializeField] private State _PickRecapState;
-
+    [SerializeField] private float TimeToWaitAfterLastBomb = .75f;
+    private float WaitAfterLastBombTimer = 0f;
     private int NumPicked = 0;
 
     public override void OnStateEnter()
     {
         NumPicked = 0;
+        WaitAfterLastBombTimer = 0f;
     }
 
     public override State OnUpdate()
@@ -21,7 +23,14 @@ public class PickGamePicking : State
 
         if(NumPicked == _PickGameState.PickScript.Count)
         {
-            rtn = _PickRecapState;
+            if(WaitAfterLastBombTimer >= TimeToWaitAfterLastBomb)
+            {
+                rtn = _PickRecapState;
+            }
+            else
+            {
+                WaitAfterLastBombTimer += Time.deltaTime;
+            }
         }
 
         return rtn;

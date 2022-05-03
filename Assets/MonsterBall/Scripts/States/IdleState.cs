@@ -30,43 +30,43 @@ public class IdleState : State
             _TryStartGame = false;
         }
 
-        if(Input.GetKeyDown(KeyCode.KeypadPeriod))
+        if(InputBehaviorTypes.GetKeyDown(KeyCode.KeypadPeriod))
         {
             rtn = GafSpin(new int[3] { 10, 10, 10 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad0))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad0))
         {
             rtn = GafSpin(new int[3] { 0, 0, 0 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad1))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad1))
         {
             rtn = GafSpin(new int[3] { 1, 1, 1 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad2))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad2))
         {
             rtn = GafSpin(new int[3] { 2, 2, 2 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad3))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad3))
         {
             rtn = GafSpin(new int[3] { 3, 3, 3 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad4))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad4))
         {
             rtn = GafSpin(new int[3] { 4, 4, 4 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad5))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad5))
         {
             rtn = GafSpin(new int[3] { 5, 5, 5 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad6))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad6))
         {
             rtn = GafSpin(new int[3] { 6, 6, 6 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad7))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad7))
         {
             rtn = GafSpin(new int[3] { 7, 7, 7 });
         }
-        if (Input.GetKeyDown(KeyCode.Keypad8))
+        if (InputBehaviorTypes.GetKeyDown(KeyCode.Keypad8))
         {
             rtn = GafSpin(new int[3] { 8, 8, 8 });
         }

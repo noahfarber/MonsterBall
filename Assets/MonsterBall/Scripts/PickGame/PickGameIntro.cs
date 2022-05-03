@@ -27,7 +27,7 @@ public class PickGameIntro : State
     {
         State rtn = null;
 
-        if(IntroDone)
+        if(IntroDone || InputBehaviorTypes.GetKeyDown(KeyCode.Space))
         {
             rtn = _PickingState;
         }

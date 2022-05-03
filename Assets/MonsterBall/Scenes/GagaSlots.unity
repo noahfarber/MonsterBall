@@ -24177,6 +24177,7 @@ GameObject:
   - component: {fileID: 562669827}
   - component: {fileID: 562669830}
   - component: {fileID: 562669832}
+  - component: {fileID: 562669833}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -24264,6 +24265,18 @@ MonoBehaviour:
     _value: 1
   _BetAmount:
     _value: 5
+--- !u!114 &562669833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562669826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70d4d4c2edbc9304ba548c6fa5a4ab7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &575469415
 GameObject:
   m_ObjectHideFlags: 0
@@ -83930,6 +83943,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _PickGameState: {fileID: 1355896266}
   _PickRecapState: {fileID: 1789080142}
+  TimeToWaitAfterLastBomb: 0.75
 --- !u!1001 &1495858810
 PrefabInstance:
   m_ObjectHideFlags: 0

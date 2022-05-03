@@ -15,7 +15,7 @@ public class TouchTest : MonoBehaviour
     
     void Update()
     {
-        foreach (Touch touch in Input.touches)
+        foreach (Touch touch in InputBehaviorTypes.touches)
         {
             if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
             {

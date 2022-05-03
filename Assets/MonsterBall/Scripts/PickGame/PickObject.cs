@@ -39,16 +39,17 @@ public class PickObject : MonoBehaviour
     {
         bool isBomb = value == -1;
         ValueText.text = isBomb ? "X" : value.ToString();
+        ValueText.color = value == -1 ? Color.red : new Color(255, 0, 213);
         Open = true;
         GetComponent<Button>().enabled = false;
         PressedParticle.Play();
         if(isBomb)
         {
-            GoodLoop.Play();
+            BadLoop.Play();
         }
         else
         {
-            BadLoop.Play();
+            GoodLoop.Play();
         }
     }
 
