@@ -21,20 +21,20 @@ public class ScreenCapture : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (InputBehaviorTypes.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             CurrentPhone = i55;
         }
-        if (InputBehaviorTypes.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             CurrentPhone = i65;
         }
-        if (InputBehaviorTypes.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             CurrentPhone = i129;
         }
 
-        if (InputBehaviorTypes.GetKeyDown(KeyCode.Backspace))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             string name = CurrentPhone.Type + "_" + CurrentPhone.Count + ".png";
             string folderPath = "Screenshots/";

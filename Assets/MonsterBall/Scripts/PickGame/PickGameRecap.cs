@@ -13,7 +13,7 @@ public class PickGameRecap : State
     public override void OnStateEnter()
     {
         OutroDone = false;
-        View.BlackFilter.DOColor(Color.black, .75f).SetEase(Ease.InOutCubic).OnComplete(BlackFilterEnabled);
+        View.BlackFilter.DOColor(Color.clear, .5f).SetEase(Ease.InOutCubic).OnComplete(SetBlackFilter);
     }
 
     public override State OnUpdate()
@@ -31,6 +31,11 @@ public class PickGameRecap : State
     public override void OnStateExit()
     {
 
+    }
+
+    private void SetBlackFilter()
+    {
+        View.BlackFilter.DOColor(Color.black, .75f).SetEase(Ease.InOutCubic).OnComplete(BlackFilterEnabled);
     }
 
     private void BlackFilterEnabled()
