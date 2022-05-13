@@ -38,6 +38,10 @@ public class PickGameIntro : State
     public override void OnStateExit()
     {
 
+        if (View.BonusWinParticle != null)
+        {
+            View.BonusWinParticle.Stop();
+        }
     }
 
     private void BonusTextFulLSize()
@@ -47,7 +51,7 @@ public class PickGameIntro : State
 
     private void BlackFilterEnabled()
     {
-        View.Toggle(true);
+        View.TogglePickObjects(true);
         View.BonusWinText.transform.localScale = Vector3.zero;
         View.BlackFilter.DOKill();
         View.BlackFilter.DOColor(Color.clear, 1.5f).SetEase(Ease.OutCubic).OnComplete(BlackFilterDisabled);

@@ -341,7 +341,7 @@ public class Math : MonoBehaviour
         ReelWeights.Add("Seven", new int[3] { 95, 105, 120 });
         ReelWeights.Add("Diamond", new int[3] { 65, 75, 85 });
         ReelWeights.Add("Wild", new int[3] { 60, 60, 60 });
-        ReelWeights.Add("Bonus", new int[3] { 110, 109, 80 });
+        ReelWeights.Add("Bonus", new int[3] { 250, 275, 300 });
 
         string weights = "";
         for (int r = 0; r < ReelWeightCount.Length; r++)

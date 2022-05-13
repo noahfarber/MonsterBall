@@ -26,16 +26,10 @@ public class SoundConfig : MonoBehaviour
 
     private void Update()
     {
-        
-    }
-
-    // Deprecated
-    public void PlayRandomBackgroundClip()
-    {
-        ClipIndex = Random.Range(0, BackgroundClips.Length);
-
-        BackgroundMusic.clip = BackgroundClips[ClipIndex];
-        SoundManager.Instance.PlayAndFade(BackgroundMusic, .75f, 1f, 0f);
+        if(!BackgroundMusic.isPlaying)
+        {
+            PlayNextBackgroundClip();
+        }   
     }
 
     public void PlayNextBackgroundClip()
@@ -48,7 +42,7 @@ public class SoundConfig : MonoBehaviour
         }
 
         BackgroundMusic.clip = BackgroundClips[ClipIndex];
-        SoundManager.Instance.PlayAndFade(BackgroundMusic, .75f, 1f, 0f);
+        SoundManager.Instance.PlayAndFade(BackgroundMusic, .75f, 2f, 0f);
     }
 
     public void FadeBackgroundMusic(float targetVolume, float duration, float startVolume = -1)
@@ -69,8 +63,21 @@ public class SoundConfig : MonoBehaviour
     public void ReelStopped(int r)
     {
         AudioClip stopSound = ReelStop;
+        bool playSound = true;
+        for (int i = 0; i < 3; i++)
+        {
+            if (Central.GlobalData.GameData.ReelsResult[i][1] != 10 || Central.GlobalData.GameData.ReelsResult[r][1] != 10) // If it's a bonus symbol
+            {
+                playSound = false;
+            }
 
-        if(Central.GlobalData.GameData.ReelsResult[r][1] == 10) // If it's a bonus symbol
+            if(i >= r)
+            {
+                break;
+            }
+        }
+
+        if(playSound)
         {
             stopSound = SpecialStops[r];
         }

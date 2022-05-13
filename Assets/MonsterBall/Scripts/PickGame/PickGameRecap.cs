@@ -40,9 +40,9 @@ public class PickGameRecap : State
 
     private void BlackFilterEnabled()
     {
-        View.Toggle(false);
+        View.TogglePickObjects(false);
         View.BlackFilter.DOKill();
-        View.BlackFilter.DOColor(Color.clear, 1.5f).SetEase(Ease.OutCubic).OnComplete(BlackFilterDisabled);
+        View.BlackFilter.DOColor(Color.clear, .5f).SetEase(Ease.OutCubic).OnComplete(BlackFilterDisabled);
     }
 
     private void BlackFilterDisabled()

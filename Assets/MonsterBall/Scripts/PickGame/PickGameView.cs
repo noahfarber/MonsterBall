@@ -8,19 +8,21 @@ public class PickGameView : MonoBehaviour
     public Image BlackFilter;
     public GameObject PickReelsBackground;
     public GameObject PickBackground;
+    public GameObject PickUI;
     public GameObject PickTiles;
     public GameObject BonusWinText;
     public ParticleSystem BonusWinParticle;
 
     private void Start()
     {
-        Toggle(false);
+        TogglePickObjects(false);
     }
 
-    public void Toggle(bool enabled)
+    public void TogglePickObjects(bool enabled)
     {
         PickReelsBackground.SetActive(enabled);
         PickBackground.SetActive(enabled);
+        PickUI.SetActive(enabled);
         PickTiles.SetActive(enabled);
     }
 }

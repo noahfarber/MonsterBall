@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 namespace Framework
 {
@@ -10,6 +11,8 @@ namespace Framework
         [SerializeField] private WinPresentationState _WinPresentationState;
         public PickObject[] Values;
         public GameObject PickGameView;
+        public AudioSource BonusMusic;
+        public AudioSource BonusWinEffect;
 
         [HideInInspector] public List<int> PickScript = new List<int>();
         private int TotalWon = 0;
@@ -22,6 +25,8 @@ namespace Framework
             ClearTexts();
             AssignValuesToScript();
             PickGameView.gameObject.SetActive(true);
+            PlayBonusMusic();
+            BonusWinEffect.Play();
             ReadyToExit = false;
         }
 
@@ -48,7 +53,20 @@ namespace Framework
 
         public void GameComplete()
         {
+            PlayBonusMusic(false);
             ReadyToExit = true;
+        }
+
+        private void PlayBonusMusic(bool enable = true)
+        {
+            if(enable)
+            {
+                BonusMusic.volume = 0f;
+                SoundManager.Instance.Play(BonusMusic);
+            }
+         
+            SoundConfig.Instance.FadeBackgroundMusic(enable ? 0f : 1f, 1f);
+            BonusMusic.DOFade(enable ? 1f : 0f, .25f);
         }
 
         private void AssignValuesToScript()
