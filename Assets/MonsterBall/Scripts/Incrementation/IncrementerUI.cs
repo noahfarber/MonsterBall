@@ -7,8 +7,16 @@ public class IncrementerUI : MonoBehaviour
 {
     public TextMeshProUGUI Text;
     public System.Action IncrementationComplete;
-    public bool Incrementing = false;
-    
+    [HideInInspector] public bool Incrementing = false;
+
+    public int Value
+    {
+        get
+        {
+            return _Value;
+        }
+    }
+
     private int _InitialValue = 0;
     private int _Value = 0;
     private int _DeltaValue = 0;

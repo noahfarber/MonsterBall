@@ -11,6 +11,8 @@ public class PickGameView : MonoBehaviour
     public GameObject PickUI;
     public GameObject PickTiles;
     public GameObject BonusWinText;
+    public GameObject NormalGameUI;
+
     public ParticleSystem BonusWinParticle;
 
     private void Start()
@@ -24,5 +26,6 @@ public class PickGameView : MonoBehaviour
         PickBackground.SetActive(enabled);
         PickUI.SetActive(enabled);
         PickTiles.SetActive(enabled);
+        NormalGameUI.SetActive(!enabled);
     }
 }

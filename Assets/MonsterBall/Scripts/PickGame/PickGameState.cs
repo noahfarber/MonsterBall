@@ -13,6 +13,8 @@ namespace Framework
         public GameObject PickGameView;
         public AudioSource BonusMusic;
         public AudioSource BonusWinEffect;
+        public IncrementerUI TotalWinMeter;
+        [HideInInspector] public int CurrentPickWinAmount;
 
         [HideInInspector] public List<int> PickScript = new List<int>();
         private int TotalWon = 0;
@@ -27,6 +29,10 @@ namespace Framework
             PickGameView.gameObject.SetActive(true);
             PlayBonusMusic();
             BonusWinEffect.Play();
+
+            CurrentPickWinAmount = 0;
+            TotalWinMeter.SetValue(0);
+
             ReadyToExit = false;
         }
 

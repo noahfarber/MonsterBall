@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework;
+using TMPro;
 
 public class PickGamePicking : State
 {
     [SerializeField] private PickGameState _PickGameState;
     [SerializeField] private State _PickRecapState;
     [SerializeField] private float TimeToWaitAfterLastBomb = .75f;
+
     private float WaitAfterLastBombTimer = 0f;
     private int NumPicked = 0;
 
@@ -45,8 +47,19 @@ public class PickGamePicking : State
     {
         if(NumPicked < _PickGameState.PickScript.Count && !objectPicked.Open)
         {
-            objectPicked.Clicked(_PickGameState.PickScript[NumPicked]);
+            int amountWon = _PickGameState.PickScript[NumPicked];
+            objectPicked.Clicked(amountWon);
+            if(amountWon > 0)
+            {
+                AddPickValue(amountWon);
+            }
             NumPicked++;
         }
+    }
+
+    private void AddPickValue(int value)
+    {
+        _PickGameState.CurrentPickWinAmount += value;
+        _PickGameState.TotalWinMeter.Increment(_PickGameState.CurrentPickWinAmount, 1f, _PickGameState.TotalWinMeter.Value);
     }
 }
